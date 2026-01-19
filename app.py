@@ -250,6 +250,30 @@ def dashboard():
         user_created_at=current_user.created_at.strftime('%Y-%m-%d')
     )
 
+@app.route('/step/<int:step_id>/update_journal', methods=['POST'])
+@login_required
+def update_step_journal(step_id):
+    step = Step.query.get_or_404(step_id)
+    if step.user_id != current_user.id:
+        abort(403)
+        
+    content = request.form.get('journal_content')
+    
+    # Check if a log entry for today already exists for this step
+    today = date.today()
+    log = StepLog.query.filter_by(step_id=step.id, date=today).first()
+    
+    if log:
+        log.content = content # Update existing
+    else:
+        # Create new log if it doesn't exist
+        log = StepLog(content=content, step_id=step.id, date=today)
+        db.session.add(log)
+        
+    db.session.commit()
+    flash('Journal entry saved.', 'success')
+    return redirect(url_for('step_view', step_id=step.id))
+
 # ==========================================
 #          PHASE 4: NEW FEATURES
 # ==========================================
