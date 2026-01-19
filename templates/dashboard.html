@@ -1,6 +1,8 @@
 {% extends "base.html" %}
+
 {% block content %}
 <div class="max-w-6xl mx-auto space-y-8 pb-20">
+    
     <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-3xl p-6 mb-8 text-blue-900 dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
         <div class="flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="text-center md:text-left">
@@ -11,11 +13,11 @@
                 
                 <div class="flex flex-wrap justify-center md:justify-start gap-2 mt-4">
                     {% if user.streak_freezes > 0 %}
-                    <span class="text-blue-600 font-bold text-xs bg-white/60 dark:bg-blue-900/40 px-3 py-1.5 rounded-full shadow-sm border border-blue-100 dark:border-blue-800">
+                    <span class="text-blue-600 dark:text-blue-300 font-bold text-xs bg-white/60 dark:bg-blue-900/40 px-3 py-1.5 rounded-full shadow-sm border border-blue-100 dark:border-blue-800">
                         ❄️ {{ user.streak_freezes }} Safe
                     </span>
                     {% endif %}
-                    <span class="text-stone-500 font-bold text-xs bg-white/60 dark:bg-stone-700 px-3 py-1.5 rounded-full shadow-sm border border-stone-100 dark:border-stone-600">
+                    <span class="text-stone-500 dark:text-stone-400 font-bold text-xs bg-white/60 dark:bg-stone-800 px-3 py-1.5 rounded-full shadow-sm border border-stone-100 dark:border-stone-700">
                         Target: {{ user.daily_target }}
                     </span>
                 </div>
@@ -34,34 +36,45 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
         <div class="space-y-8">
+            
             <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6 overflow-hidden dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="font-bold text-lg text-blue-900 dark:text-white flex items-center gap-2">
                         ❄️ Consistency Map
                     </h3>
                     <span class="text-xs font-medium text-blue-600 dark:text-cyan-300 bg-blue-100/50 dark:bg-blue-900/40 px-3 py-1 rounded-full border border-blue-200 dark:border-blue-700">
-                        Powered by Google Charts
+                        Google Charts
                     </span>
                 </div>
                 <div id="calendar_chart" class="w-full min-h-[200px] flex items-center justify-center">
                     <div class="animate-pulse text-blue-400 dark:text-blue-300 text-sm">Loading visual data...</div>
                 </div>
             </div>
+
             <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6 dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
                 <div class="flex justify-between items-end mb-4">
                     <h3 class="text-xs font-black uppercase tracking-widest text-stone-400 dark:text-slate-400">My Path</h3>
                     <div class="flex gap-2 text-[10px] font-bold text-stone-400 dark:text-slate-500">
-                        <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-purple-400"></div> Rest</span>
+                        <button onclick="openRestDayModal()" class="flex items-center gap-1 hover:text-purple-500 transition cursor-pointer" title="Plan a rest day">
+                            <div class="w-2 h-2 rounded-full bg-purple-400"></div> Rest
+                        </button>
                         <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-orange-500"></div> Work</span>
                     </div>
                 </div>
+                <p class="text-xs text-stone-500 dark:text-stone-400 text-center py-4">
+                    Click "Rest" above to log a special day off.
+                </p>
             </div>
         </div>
+
         <div class="lg:col-span-2 space-y-8">
+            
             <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6 relative overflow-hidden dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
                 <div class="absolute -top-10 -right-10 w-40 h-40 bg-cyan-300/20 dark:bg-cyan-900/20 rounded-full blur-3xl pointer-events-none"></div>
                 <h3 class="font-bold text-lg text-blue-900 dark:text-white mb-4">Active "Frost" Goals</h3>
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {% for step in steps %}
                     <a href="{{ url_for('step_view', step_id=step.id) }}" class="group relative flex flex-col justify-between backdrop-blur-lg bg-white/40 dark:bg-slate-900/50 border border-white/50 dark:border-white/10 shadow-xl dark:shadow-blue-900/20 p-6 rounded-[2rem] hover:border-cyan-300 dark:hover:border-cyan-400 transition-all hover:-translate-y-1">
@@ -75,26 +88,29 @@
                         </div>
                     </a>
                     {% endfor %}
+                    
                     <button onclick="openModal()" class="min-h-[180px] border-4 border-dashed border-white/60 dark:border-white/20 rounded-[2rem] flex flex-col items-center justify-center p-6 text-blue-300 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 hover:border-cyan-300 dark:hover:border-cyan-400 hover:bg-blue-50/80 dark:hover:bg-blue-900/20 transition group">
                         <span class="text-4xl mb-2 group-hover:scale-110 transition">🧱</span>
                         <span class="font-bold">Lay New Stone</span>
                     </button>
                 </div>
             </div>
+
             <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6 dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
                 <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-purple-400 to-indigo-400"></div>
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-lg font-black text-blue-900 dark:text-white flex items-center gap-2">📓 Daily Journal</h2>
                     <a href="{{ url_for('journal_history') }}" class="text-xs bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-300 px-3 py-1.5 rounded-xl hover:bg-stone-200 dark:hover:bg-stone-600 transition font-bold">📜 History</a>
                 </div>
-                <form action="{{ url_for('update_global_journal') }}" method="POST" id="global-journal-container" class="flex flex-col h-full" onclick="enableZen('global-journal-container')">
+                
+                <form action="{{ url_for('update_global_journal') }}" method="POST" id="global-journal-container" class="flex flex-col h-full transition-all" onclick="enableZen('global-journal-container')">
                     <input type="text" name="title" 
                            value="{{ daily_journal.title if daily_journal else (('🌴 Rest Day: ' + special_day_reason) if special_day_reason else today_date.strftime('%B %d, %Y')) }}" 
                            class="mb-3 w-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 rounded-lg font-black text-xl border-none focus:ring-0 p-0">
                     
-                    <textarea id="journal-area" name="content" placeholder="Write your thoughts..." class="flex-1 min-h-[150px] w-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 rounded-lg p-4 resize-none leading-relaxed text-base">
+                    <textarea id="journal-area" name="content" placeholder="Write your thoughts..." class="flex-1 min-h-[150px] w-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 rounded-lg p-4 resize-none leading-relaxed text-base">{% if daily_journal %}{{ daily_journal.content }}{% endif %}</textarea>
                     
-                    <button class="mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md hover:shadow-lg hover:shadow-cyan-200/50 transition-all rounded-xl">Save Entry</button>
+                    <button class="mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md hover:shadow-lg hover:shadow-cyan-200/50 transition-all rounded-xl py-2 font-bold">Save Entry</button>
                     
                     <div id="zen-buttons" class="hidden absolute top-8 right-8 gap-4">
                         <button type="button" onclick="generatePrompt(event)" class="bg-purple-100 text-purple-600 px-5 py-2 rounded-full font-bold shadow-lg hover:bg-purple-200">✨ New Prompt</button>
@@ -107,14 +123,17 @@
 </div>
 
 <div id="rest-day-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-stone-900/60 backdrop-blur-sm px-4">
-    <div class="backdrop-blur-xl bg-white/50 dark:bg-slate-900/80 border border-white/60 dark:border-white/10 shadow-2xl w-full max-w-md p-8 rounded-3xl">
+    <div class="backdrop-blur-xl bg-white/50 dark:bg-slate-900/80 border border-white/60 dark:border-white/10 shadow-2xl w-full max-w-md p-8 rounded-3xl transition-all transform scale-100">
         <h2 class="text-2xl font-black mb-1 text-blue-900 dark:text-white">Plan a Special Day</h2>
-        <form action="{{ url_for('add_custom_date') }}" method="POST" class="space-y-4 mt-4">
-            <input type="date" name="date" class="w-full bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 p-3 rounded-xl font-bold" required>
-            <input type="text" name="reason" placeholder="Reason (e.g. Birthday)" class="w-full bg-white/60 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 rounded-lg p-3 font-bold" required>
+        <p class="text-stone-400 dark:text-slate-400 text-sm mb-6">Log a birthday, holiday, or rest day.</p>
+        
+        <form action="{{ url_for('add_custom_date') }}" method="POST" class="space-y-4">
+            <input type="date" name="date" class="w-full bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white p-3 rounded-xl font-bold focus:ring-2 focus:ring-cyan-400 outline-none" required>
+            <input type="text" name="reason" placeholder="Reason (e.g. Birthday)" class="w-full bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 p-3 rounded-xl font-bold focus:ring-2 focus:ring-cyan-400 outline-none" required>
+            
             <div class="pt-4 flex justify-end gap-4">
                 <button type="button" onclick="closeRestDayModal()" class="px-6 py-3 rounded-xl font-bold text-blue-900/80 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition">Cancel</button>
-                <button class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md hover:shadow-lg hover:shadow-cyan-200/50 transition-all rounded-xl px-8 py-3 font-bold">Save</button>
+                <button class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md hover:shadow-lg transition-all rounded-xl px-8 py-3 font-bold">Save</button>
             </div>
         </form>
     </div>
@@ -122,95 +141,90 @@
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-    // 1. Load the Calendar package
+    // --- GOOGLE CHART LOGIC ---
     google.charts.load("current", {packages:["calendar"]});
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
-        // 2. Prepare the Data
+        // Backend data passed via Jinja2
         var rawData = {{ heatmap_data | tojson }};
         var dataTable = new google.visualization.DataTable();
         dataTable.addColumn({ type: 'date', id: 'Date' });
         dataTable.addColumn({ type: 'number', id: 'Completed Stones' });
 
-        // Convert backend arrays [Y, M, D, V] into JS Date objects
+        // Convert backend arrays [Y, M-1, D, Count] into JS Date objects
         var processedRows = rawData.map(function(row) {
             return [new Date(row[0], row[1], row[2]), row[3]];
         });
 
         if (processedRows.length === 0) {
-            // Handle empty state (new users)
             document.getElementById('calendar_chart').innerHTML = 
-                '<div class="text-center text-blue-800/60 py-10">Start completing steps to see your ice form! 🧊</div>';
+                '<div class="text-center text-blue-800/60 dark:text-blue-300/60 py-10">Start completing steps to see your ice form! 🧊</div>';
             return;
         }
 
         dataTable.addRows(processedRows);
 
-        // 3. Define the "Frost" Options
         var chart = new google.visualization.Calendar(document.getElementById('calendar_chart'));
 
         var options = {
             height: 220,
             calendar: {
-                // Formatting the "cells"
                 cellSize: 16,
                 cellColor: {
-                    stroke: '#ffffff', // White border between days
-                    strokeOpacity: 0.5,
+                    stroke: '#ffffff', // White border
+                    strokeOpacity: 0.3,
                     strokeWidth: 1,
                 },
                 focusedCellColor: {
-                    stroke: '#0ea5e9', // Cyan highlight on hover
+                    stroke: '#0ea5e9', // Cyan highlight
                     strokeOpacity: 1,
                     strokeWidth: 2,
                 },
                 monthLabel: {
                     fontName: 'sans-serif',
                     fontSize: 12,
-                    color: '#1e3a8a', // Dark blue text
+                    color: '#64748b', // Slate-500
                     bold: true,
                 },
                 monthOutlineColor: {
-                    stroke: '#bfdbfe', // Light blue month borders
-                    strokeOpacity: 0.8,
-                    strokeWidth: 2
+                    stroke: '#cbd5e1',
+                    strokeOpacity: 0.5,
+                    strokeWidth: 1
                 },
                 unusedMonthOutlineColor: {
-                    stroke: '#eff6ff',
+                    stroke: '#f1f5f9',
                     strokeOpacity: 0.5,
                     strokeWidth: 1
                 },
                 underMonthSpace: 16,
             },
-            // THE FROST GRADIENT (Light Ice -> Deep Freeze)
+            // Frost Gradient
             colorAxis: {
                 minValue: 1,
                 colors: ['#cce3fd', '#99caff', '#60a5fa', '#2563eb'] 
             },
-            // Remove the default background so it matches our glass card
             backgroundColor: 'transparent', 
         };
 
         chart.draw(dataTable, options);
     }
 
-    // 4. Make it Responsive (Redraw on window resize)
+    // Responsive Redraw
     window.addEventListener('resize', function() {
         if (google.visualization && google.visualization.DataTable) {
             drawChart();
         }
     });
-</script>
-<script>
+
+    // --- MODAL LOGIC ---
     function openRestDayModal() { document.getElementById('rest-day-modal').classList.remove('hidden'); }
     function closeRestDayModal() { document.getElementById('rest-day-modal').classList.add('hidden'); }
     
-    // ZEN MODE LOGIC UPDATE
+    // --- ZEN MODE LOGIC ---
     function enableZen(id) { 
         document.getElementById(id).classList.add('zen-active'); 
         document.body.classList.add('zen-open');
-        // Un-hide the buttons when Zen is active
         document.getElementById('zen-buttons').classList.remove('hidden');
         document.getElementById('zen-buttons').classList.add('flex');
     }
@@ -219,55 +233,15 @@
         e.stopPropagation(); 
         document.getElementById(id).classList.remove('zen-active'); 
         document.body.classList.remove('zen-open');
-        // Hide buttons again
         document.getElementById('zen-buttons').classList.add('hidden');
         document.getElementById('zen-buttons').classList.remove('flex');
     }
 
     const prompts = ["What was the hardest part of today?", "One thing you learned?", "3 things you are grateful for?", "Describe your mood in one word."];
-    function generatePrompt(e) { if(e) e.stopPropagation(); document.getElementById('journal-area').value = "✨ " + prompts[Math.floor(Math.random() * prompts.length)] + "\n\n" + document.getElementById('journal-area').value; }
-
-    // HEATMAP (Same logic as before)
-    document.addEventListener("DOMContentLoaded", function() {
-        const heatmapData = {{ heatmap_data|tojson }};
-        const restDaysMap = {{ custom_rest_days|tojson }}; 
-        const signupDateStr = "{{ user_created_at }}";
-        const container = document.getElementById('heatmap-grid');
-        
-        let startDate = new Date(signupDateStr);
-        let today = new Date();
-        startDate.setDate(1); startDate.setHours(0,0,0,0); today.setHours(0,0,0,0);
-        startDate.setDate(startDate.getDate() - startDate.getDay());
-        
-        let currentDate = new Date(startDate);
-        while (currentDate <= today) {
-            const weekCol = document.createElement('div');
-            weekCol.className = "flex flex-col gap-1.5";
-            for (let i = 0; i < 7; i++) {
-                const dateStr = currentDate.toISOString().split('T')[0];
-                const cell = document.createElement('div');
-                cell.className = "w-3 h-3 rounded-full border border-transparent hover:scale-125 cursor-pointer transition-all";
-                
-                const count = heatmapData[dateStr] || 0;
-                const restReason = restDaysMap[dateStr];
-                
-                if (count > 0) {
-                    if (count == 1) cell.className += " bg-orange-200";
-                    else if (count <= 3) cell.className += " bg-orange-400 shadow-sm shadow-orange-200";
-                    else cell.className += " bg-orange-600 shadow-md shadow-orange-300";
-                    cell.title = `${dateStr}: ${count} steps`;
-                } else if (restReason) {
-                    cell.className += " bg-purple-400 shadow-sm shadow-purple-200";
-                    cell.title = restReason;
-                } else {
-                    cell.className += " bg-stone-200 dark:bg-stone-700";
-                }
-                weekCol.appendChild(cell);
-                currentDate.setDate(currentDate.getDate() + 1);
-            }
-            container.appendChild(weekCol);
-        }
-        if(container.parentElement) container.parentElement.scrollLeft = container.parentElement.scrollWidth;
-    });
+    function generatePrompt(e) { 
+        if(e) e.stopPropagation(); 
+        const area = document.getElementById('journal-area');
+        area.value = "✨ " + prompts[Math.floor(Math.random() * prompts.length)] + "\n\n" + area.value; 
+    }
 </script>
 {% endblock %}

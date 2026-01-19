@@ -9,11 +9,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        /* Smooth Scroll Setup */
         html.lenis, html.lenis body { height: auto; }
         .lenis.lenis-smooth { scroll-behavior: auto !important; }
         .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
         .lenis.lenis-stopped { overflow: hidden; }
         .lenis.lenis-scrolling iframe { pointer-events: none; }
+
+        /* Zen Mode Logic */
+        .zen-active {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 60; padding: 2rem; background: rgba(255, 255, 255, 0.98);
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .dark .zen-active { background: rgba(15, 23, 42, 0.99); }
+        body.zen-open { overflow: hidden; }
     </style>
 
     <script>
@@ -29,39 +39,39 @@
             }
         }
     </script>
-    <style>
-        /* Note: We removed 'html { scroll-behavior: smooth; }' because Lenis handles it now! */
-        
-        /* ZEN MODE LOGIC */
-        .zen-active {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 50; padding: 2rem; background: rgba(255, 255, 255, 0.98);
-            display: flex; flex-direction: column; justify-content: center;
-        }
-        .dark .zen-active { background: rgba(28, 25, 23, 0.99); }
-        body.zen-open { overflow: hidden; }
-    </style>
 </head>
-<body class="bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-50 via-cyan-100 to-blue-200 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900 min-h-screen font-sans text-slate-800 dark:text-blue-50 antialiased">
 
-    <nav class="sticky top-0 z-50 backdrop-blur-md bg-white/30 dark:bg-slate-900/50 border-b border-white/40 dark:border-white/10 shadow-sm">
+<body class="bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-50 via-cyan-100 to-blue-200 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900 min-h-screen font-sans text-slate-800 dark:text-blue-50 antialiased selection:bg-cyan-200 selection:text-blue-900">
+
+    <nav class="sticky top-0 z-40 backdrop-blur-md bg-white/30 dark:bg-slate-900/50 border-b border-white/40 dark:border-white/10 shadow-sm transition-colors duration-300">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-4">
                 <a href="{{ url_for('dashboard') }}" class="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center gap-2">
                     ❄️ Frost Journal
                 </a>
+
                 <div class="flex items-center gap-6 font-semibold text-blue-900/80 dark:text-blue-200">
                     {% if current_user.is_authenticated %}
                         <a href="{{ url_for('dashboard') }}" class="hover:text-blue-600 dark:hover:text-cyan-300 transition">Dashboard</a>
                         <a href="{{ url_for('all_steps') }}" class="hover:text-blue-600 dark:hover:text-cyan-300 transition">Goals</a>
                         <a href="{{ url_for('calendar_view') }}" class="hover:text-blue-600 dark:hover:text-cyan-300 transition">History</a>
                         <a href="{{ url_for('about') }}" class="hover:text-blue-600 dark:hover:text-cyan-300 transition">About</a>
-                        <div class="relative group">
+                        
+                        <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition" title="Toggle Dark Mode">
+                            <svg class="w-5 h-5 text-blue-600 dark:text-cyan-300 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                            <svg class="w-5 h-5 text-cyan-300 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                            </svg>
+                        </button>
+
+                        <div class="relative group z-50">
                              <button class="flex items-center gap-1 hover:text-blue-600 dark:hover:text-cyan-300 transition">
                                 Account ▾
                              </button>
                              <div class="absolute right-0 mt-2 w-48 backdrop-blur-lg bg-white/80 dark:bg-slate-900/80 border border-white/50 dark:border-white/10 rounded-xl shadow-xl opacity-0 group-hover:opacity-100 hover:opacity-100 transition-all duration-200 pointer-events-none group-hover:pointer-events-auto hover:pointer-events-auto p-2">
-                                <a href="{{ url_for('profile') }}" class="block px-4 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-sm">Profile & Settings</a>
+                                <a href="{{ url_for('profile') }}" class="block px-4 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-sm dark:text-slate-200">Profile & Settings</a>
                                 <div class="border-t border-blue-100 dark:border-slate-700 my-1"></div>
                                 <a href="{{ url_for('logout') }}" class="block px-4 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 text-sm">Logout</a>
                              </div>
@@ -75,19 +85,29 @@
         </div>
     </nav>
 
-    <main class="container mx-auto px-4 py-8">
+    <main class="container mx-auto px-4 py-8 relative z-0">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
                     <div class="backdrop-blur-lg bg-white/40 dark:bg-slate-900/50 border border-white/50 dark:border-white/10 shadow-xl dark:shadow-blue-900/20 rounded-2xl p-4 mb-4 text-slate-800 dark:text-slate-200
                         {% if category == 'success' %} bg-green-100/50 dark:bg-green-900/20 border-green-200 dark:border-green-700 {% endif %}
                         {% if category == 'error' %} bg-red-100/50 dark:bg-red-900/20 border-red-200 dark:border-red-700 {% endif %}
-                        {% if category == 'info' %} bg-blue-100/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 {% endif %}">
-                        {{ message }}
+                        {% if category == 'info' %} bg-blue-100/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 {% endif %}
+                        {% if category == 'diagnostic' %} bg-indigo-100/50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-700 {% endif %}">
+                        
+                        {% if category == 'diagnostic' %}
+                            <div class="flex items-start gap-3">
+                                <div class="text-2xl">🤖</div>
+                                <div class="prose prose-sm prose-blue dark:prose-invert max-w-none">{{ message | safe }}</div>
+                            </div>
+                        {% else %}
+                            {{ message }}
+                        {% endif %}
                     </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
+
         {% block content %}{% endblock %}
     </main>
 
@@ -148,13 +168,55 @@
         </div>
     </div>
 
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+        <div id="frosty-bubble" class="hidden transform transition-all duration-300 origin-bottom-right">
+            <div class="relative bg-white/80 dark:bg-slate-800/90 backdrop-blur-md border border-blue-200 dark:border-slate-600 text-blue-900 dark:text-blue-100 px-4 py-3 rounded-2xl rounded-tr-none shadow-lg max-w-xs cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition" onclick="toggleChat()">
+                <p id="bubble-text" class="text-sm font-medium">Keep it cool! ❄️</p>
+                <button onclick="event.stopPropagation(); closeBubble()" class="absolute -top-2 -left-2 bg-blue-100 dark:bg-slate-700 text-blue-600 dark:text-blue-300 rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-100 hover:text-red-500">&times;</button>
+            </div>
+        </div>
+
+        <div id="frosty-window" class="hidden w-80 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/50 dark:border-white/10 shadow-2xl rounded-2xl overflow-hidden flex flex-col transition-all transform scale-95 origin-bottom-right" style="height: 400px;">
+            <div class="bg-gradient-to-r from-cyan-500 to-blue-600 p-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">⛄</span>
+                    <span class="font-bold">Frosty AI</span>
+                </div>
+                <button onclick="toggleChat()" class="hover:bg-white/20 rounded-full p-1">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-white/30 dark:bg-slate-800/30">
+                <div class="flex justify-start">
+                    <div class="bg-blue-100/80 dark:bg-blue-900/40 text-blue-900 dark:text-blue-100 px-3 py-2 rounded-lg rounded-tl-none text-sm shadow-sm">
+                        Hey! I'm Frosty. Need a pep talk or help planning? ❄️
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 bg-white/60 dark:bg-slate-800/60 border-t border-white/50 dark:border-white/10">
+                <form id="chat-form" onsubmit="sendMessage(event)" class="flex gap-2">
+                    <input type="text" id="chat-input" placeholder="Type a message..." class="flex-1 bg-white/50 dark:bg-slate-900/50 border border-blue-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400 placeholder-blue-300 dark:placeholder-slate-500 text-blue-900 dark:text-white">
+                    <button type="submit" class="bg-blue-600 text-white rounded-lg px-3 hover:bg-blue-700 transition">
+                        ➤
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <button onclick="toggleChat()" class="w-14 h-14 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full shadow-lg hover:shadow-cyan-400/50 hover:scale-110 transition transform flex items-center justify-center text-2xl text-white border-2 border-white/30 z-50">
+            💬
+        </button>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
 
     <script>
-        // --- 3. INITIALIZE LENIS ---
+        // --- LENIS SMOOTH SCROLL ---
         const lenis = new Lenis({
             duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Luxurious ease
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             direction: 'vertical',
             gestureDirection: 'vertical',
             smooth: true,
@@ -162,203 +224,103 @@
             smoothTouch: false,
             touchMultiplier: 2,
         })
-
         function raf(time) {
             lenis.raf(time)
             requestAnimationFrame(raf)
         }
         requestAnimationFrame(raf)
 
-        // Existing Scripts
+        // --- GLOBAL FUNCTIONS ---
         function openModal() { document.getElementById('create-modal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('create-modal').classList.add('hidden'); }
+        
         function toggleTheme() {
             fetch('/toggle_theme', { method: 'POST' }).then(res => res.json()).then(data => {
                 document.documentElement.classList.toggle('dark', data.dark_mode);
             });
         }
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-            document.getElementById('mobile-menu').classList.toggle('flex');
-        }
+
+        // Apply Dark Mode from Server Context
         {% if current_user.is_authenticated and current_user.is_dark_mode %}
             document.documentElement.classList.add('dark');
         {% endif %}
 
-        function toggleUserMenu() {
-            const menu = document.getElementById('user-menu');
-            if (!menu) return;
-            menu.classList.toggle('hidden');
+        // --- CHAT LOGIC ---
+        const chatWindow = document.getElementById('frosty-window');
+        const bubble = document.getElementById('frosty-bubble');
+        const messagesDiv = document.getElementById('chat-messages');
+
+        function toggleChat() {
+            chatWindow.classList.toggle('hidden');
+            if (!chatWindow.classList.contains('hidden')) {
+                bubble.classList.add('hidden');
+            }
         }
 
-        document.addEventListener('click', function (e) {
-            const menu = document.getElementById('user-menu');
-            if (!menu) return;
-
-            if (
-                !e.target.closest('#user-menu') &&
-                !e.target.closest('.user-menu-trigger')
-            ) {
-                menu.classList.add('hidden');
-            }
-        });
-
-
-        // AUTO-DISMISS FLASH MESSAGES
-        document.addEventListener('click', function (e) {
-            const menu = document.getElementById('user-menu');
-            if (!menu) return;
-
-            // Close only if click is outside menu AND outside avatar button
-            if (
-                !e.target.closest('#user-menu') &&
-                !e.target.closest('.user-menu-trigger')
-            ) {
-                menu.classList.add('hidden');
-            }
-        });
-
-    </script>
-
-<div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
-
-    <div id="frosty-bubble" class="hidden transform transition-all duration-300 origin-bottom-right">
-        <div class="relative bg-white/80 backdrop-blur-md border border-blue-200 text-blue-900 px-4 py-3 rounded-2xl rounded-tr-none shadow-lg max-w-xs cursor-pointer hover:bg-white transition" onclick="toggleChat()">
-            <p id="bubble-text" class="text-sm font-medium">Keep it cool! ❄️</p>
-            <button onclick="event.stopPropagation(); closeBubble()" class="absolute -top-2 -left-2 bg-blue-100 text-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-100 hover:text-red-500">&times;</button>
-        </div>
-    </div>
-
-    <div id="frosty-window" class="hidden w-80 bg-white/90 backdrop-blur-xl border border-white/50 shadow-2xl rounded-2xl overflow-hidden flex flex-col transition-all transform scale-95 origin-bottom-right" style="height: 400px;">
-        <div class="bg-gradient-to-r from-cyan-500 to-blue-600 p-4 flex justify-between items-center text-white">
-            <div class="flex items-center gap-2">
-                <span class="text-xl">⛄</span>
-                <span class="font-bold">Frosty AI</span>
-            </div>
-            <button onclick="toggleChat()" class="hover:bg-white/20 rounded-full p-1">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
-        </div>
-        
-        <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-white/30">
-            <div class="flex justify-start">
-                <div class="bg-blue-100/80 text-blue-900 px-3 py-2 rounded-lg rounded-tl-none text-sm shadow-sm">
-                    Hey! I'm Frosty. Need a pep talk or help planning? ❄️
-                </div>
-            </div>
-        </div>
-
-        <div class="p-3 bg-white/60 border-t border-white/50">
-            <form id="chat-form" onsubmit="sendMessage(event)" class="flex gap-2">
-                <input type="text" id="chat-input" placeholder="Type a message..." class="flex-1 bg-white/50 border border-blue-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400 placeholder-blue-300 text-blue-900">
-                <button type="submit" class="bg-blue-600 text-white rounded-lg px-3 hover:bg-blue-700 transition">
-                    ➤
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <button onclick="toggleChat()" class="w-14 h-14 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full shadow-lg hover:shadow-cyan-400/50 hover:scale-110 transition transform flex items-center justify-center text-2xl text-white border-2 border-white/30 z-50">
-        💬
-    </button>
-
-</div>
-
-<script>
-    const chatWindow = document.getElementById('frosty-window');
-    const bubble = document.getElementById('frosty-bubble');
-    const messagesDiv = document.getElementById('chat-messages');
-
-    // 1. Toggle Chat Visibility
-    function toggleChat() {
-        chatWindow.classList.toggle('hidden');
-        // Hide the bubble if we open the chat
-        if (!chatWindow.classList.contains('hidden')) {
+        function closeBubble() {
             bubble.classList.add('hidden');
         }
-    }
 
-    function closeBubble() {
-        bubble.classList.add('hidden');
-    }
+        async function sendMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if (!msg) return;
 
-    // 2. Send Message to Backend
-    async function sendMessage(e) {
-        e.preventDefault();
-        const input = document.getElementById('chat-input');
-        const msg = input.value.trim();
-        if (!msg) return;
+            appendMessage(msg, 'user');
+            input.value = '';
+            const loadingId = appendMessage('Thinking...', 'bot');
 
-        // Add User Message to UI
-        appendMessage(msg, 'user');
-        input.value = '';
-
-        // Show Loading State
-        const loadingId = appendMessage('Thinking...', 'bot');
-
-        try {
-            const res = await fetch('/chat_frosty', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({message: msg})
-            });
-            const data = await res.json();
-            
-            // Replace Loading with Real Response
-            document.getElementById(loadingId).innerText = data.response;
-        } catch (err) {
-            document.getElementById(loadingId).innerText = "Brain freeze! Try again.";
+            try {
+                const res = await fetch('/chat_frosty', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: msg})
+                });
+                const data = await res.json();
+                document.getElementById(loadingId).innerText = data.response;
+            } catch (err) {
+                document.getElementById(loadingId).innerText = "Brain freeze! Try again.";
+            }
         }
-    }
 
-    // Helper to add messages to the chat window
-    function appendMessage(text, sender) {
-        const div = document.createElement('div');
-        const id = 'msg-' + Date.now();
-        div.id = id;
-        
-        div.className = sender === 'user' 
-            ? "flex justify-end" 
-            : "flex justify-start";
+        function appendMessage(text, sender) {
+            const div = document.createElement('div');
+            const id = 'msg-' + Date.now();
+            div.id = id;
+            div.className = sender === 'user' ? "flex justify-end" : "flex justify-start";
             
-        const bubbleDiv = document.createElement('div');
-        bubbleDiv.className = sender === 'user'
-            ? "bg-blue-600 text-white px-3 py-2 rounded-lg rounded-tr-none text-sm shadow-md max-w-[80%]"
-            : "bg-blue-100/80 text-blue-900 px-3 py-2 rounded-lg rounded-tl-none text-sm shadow-sm max-w-[80%]";
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = sender === 'user'
+                ? "bg-blue-600 text-white px-3 py-2 rounded-lg rounded-tr-none text-sm shadow-md max-w-[80%]"
+                : "bg-blue-100/80 dark:bg-blue-900/40 text-blue-900 dark:text-blue-100 px-3 py-2 rounded-lg rounded-tl-none text-sm shadow-sm max-w-[80%]";
             
-        bubbleDiv.innerText = text;
-        div.appendChild(bubbleDiv);
-        messagesDiv.appendChild(div);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto scroll
-        return id;
-    }
-
-    // 3. Proactive "Bubble Pop" Logic
-    // 30% chance to show a message on page load after 2 seconds
-    window.addEventListener('load', function() {
-        if (Math.random() > 0.7) { 
-            setTimeout(async () => {
-                // Don't show if chat is already open
-                if (!chatWindow.classList.contains('hidden')) return;
-
-                // Ask AI for a short proactive motivator
-                try {
-                    const res = await fetch('/chat_frosty', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({message: ""}) // Empty message triggers "Proactive" mode
-                    });
-                    const data = await res.json();
-                    
-                    document.getElementById('bubble-text').innerText = data.response;
-                    bubble.classList.remove('hidden');
-                    
-                    // Auto-hide after 8 seconds
-                    setTimeout(() => closeBubble(), 8000);
-                } catch(e) { console.log("Frosty sleeping"); }
-            }, 2000);
+            bubbleDiv.innerText = text;
+            div.appendChild(bubbleDiv);
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            return id;
         }
-    });
-</script>
+
+        // Proactive Chat Bubble
+        window.addEventListener('load', function() {
+            if (Math.random() > 0.7) { 
+                setTimeout(async () => {
+                    if (!chatWindow.classList.contains('hidden')) return;
+                    try {
+                        const res = await fetch('/chat_frosty', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({message: ""})
+                        });
+                        const data = await res.json();
+                        document.getElementById('bubble-text').innerText = data.response;
+                        bubble.classList.remove('hidden');
+                        setTimeout(() => closeBubble(), 8000);
+                    } catch(e) { console.log("Frosty sleeping"); }
+                }, 2000);
+            }
+        });
+    </script>
 </body>
 </html>
