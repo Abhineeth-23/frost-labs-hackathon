@@ -13,3 +13,5 @@ psycopg2-binary
 SQLAlchemy
 typing_extensions
 Werkzeug
+google-generativeai
+markdown
