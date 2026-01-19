@@ -69,7 +69,7 @@
                 </h3>
                 
                 <div class="space-y-3">
-                    {% for task in subtasks %}
+                    {% for task in step.subtasks %}
                     <div class="group flex items-center justify-between p-4 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-white/60 dark:border-white/5 hover:border-blue-300 dark:hover:border-blue-500 transition-all">
                         <div class="flex items-center gap-4">
                             <form action="{{ url_for('toggle_subtask', subtask_id=task.id) }}" method="POST">
