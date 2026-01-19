@@ -104,7 +104,7 @@
             
             <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-3xl p-6 dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
                 <h3 class="font-black text-lg text-blue-900 dark:text-white mb-4">📆 Daily Check-in</h3>
-                <form action="{{ url_for('update_step_journal', step_id=step.id) }}" method="POST"> <textarea name="content" placeholder="What did you do today?" class="w-full h-24 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 rounded-xl p-3 text-sm focus:ring-2 focus:ring-cyan-400 outline-none dark:text-white resize-none mb-3"></textarea>
+                <form action="{{ url_for('log_step_activity', step_id=step.id) }}" method="POST"> <textarea name="content" placeholder="What did you do today?" class="w-full h-24 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 rounded-xl p-3 text-sm focus:ring-2 focus:ring-cyan-400 outline-none dark:text-white resize-none mb-3"></textarea>
                    <button class="w-full py-2 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-md">Log Activity</button>
                    <p class="text-xs text-stone-400 mt-2 text-center">Added to diagnostics history</p>
                 </form>

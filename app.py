@@ -275,6 +275,36 @@ def update_step_journal(step_id):
 
     return redirect(url_for('step_view', step_id=step.id))
 
+@app.route('/step/<int:step_id>/log_activity', methods=['POST'])
+@login_required
+def log_step_activity(step_id):
+    step = Step.query.get_or_404(step_id)
+    if step.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+    
+    # Get content from the Daily Check-in textarea
+    content = request.form.get('content')
+    today = date.today()
+    
+    if content:
+        # Check if we already logged something for this goal today
+        existing_log = StepLog.query.filter_by(step_id=step.id, date=today).first()
+        
+        if existing_log:
+            existing_log.content = content # Update today's log
+            flash("Daily log updated.", "success")
+        else:
+            # Create a new log
+            db.session.add(StepLog(content=content, step=step, user=current_user, date=today))
+            flash("Activity logged! Keep it up.", "success")
+            
+            # Update streak only if not already updated today
+            update_streak_status(current_user)
+            
+        db.session.commit()
+    
+    return redirect(url_for('step_view', step_id=step.id))
+
 # ==========================================
 #          PHASE 4: NEW FEATURES
 # ==========================================
