@@ -55,11 +55,12 @@
                         <a href="{{ url_for('dashboard') }}" class="hover:text-blue-600 transition">Dashboard</a>
                         <a href="{{ url_for('all_steps') }}" class="hover:text-blue-600 transition">Goals</a>
                         <a href="{{ url_for('calendar_view') }}" class="hover:text-blue-600 transition">History</a>
+                        <a href="{{ url_for('about') }}" class="hover:text-blue-600 transition">About</a>
                         <div class="relative group">
                              <button class="flex items-center gap-1 hover:text-blue-600 transition">
                                 Account ▾
                              </button>
-                             <div class="absolute right-0 mt-2 w-48 backdrop-blur-lg bg-white/80 border border-white/50 rounded-xl shadow-xl opacity-0 group-hover:opacity-100 transition-all pointer-events-none group-hover:pointer-events-auto p-2">
+                             <div class="absolute right-0 mt-2 w-48 backdrop-blur-lg bg-white/80 border border-white/50 rounded-xl shadow-xl opacity-0 group-hover:opacity-100 hover:opacity-100 transition-all duration-200 pointer-events-none group-hover:pointer-events-auto hover:pointer-events-auto p-2">
                                 <a href="{{ url_for('profile') }}" class="block px-4 py-2 rounded-lg hover:bg-blue-50 text-sm">Profile & Settings</a>
                                 <div class="border-t border-blue-100 my-1"></div>
                                 <a href="{{ url_for('logout') }}" class="block px-4 py-2 rounded-lg hover:bg-red-50 text-red-600 text-sm">Logout</a>
@@ -218,5 +219,146 @@
         });
 
     </script>
+
+<div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+
+    <div id="frosty-bubble" class="hidden transform transition-all duration-300 origin-bottom-right">
+        <div class="relative bg-white/80 backdrop-blur-md border border-blue-200 text-blue-900 px-4 py-3 rounded-2xl rounded-tr-none shadow-lg max-w-xs cursor-pointer hover:bg-white transition" onclick="toggleChat()">
+            <p id="bubble-text" class="text-sm font-medium">Keep it cool! ❄️</p>
+            <button onclick="event.stopPropagation(); closeBubble()" class="absolute -top-2 -left-2 bg-blue-100 text-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-100 hover:text-red-500">&times;</button>
+        </div>
+    </div>
+
+    <div id="frosty-window" class="hidden w-80 bg-white/90 backdrop-blur-xl border border-white/50 shadow-2xl rounded-2xl overflow-hidden flex flex-col transition-all transform scale-95 origin-bottom-right" style="height: 400px;">
+        <div class="bg-gradient-to-r from-cyan-500 to-blue-600 p-4 flex justify-between items-center text-white">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">⛄</span>
+                <span class="font-bold">Frosty AI</span>
+            </div>
+            <button onclick="toggleChat()" class="hover:bg-white/20 rounded-full p-1">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+        
+        <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-white/30">
+            <div class="flex justify-start">
+                <div class="bg-blue-100/80 text-blue-900 px-3 py-2 rounded-lg rounded-tl-none text-sm shadow-sm">
+                    Hey! I'm Frosty. Need a pep talk or help planning? ❄️
+                </div>
+            </div>
+        </div>
+
+        <div class="p-3 bg-white/60 border-t border-white/50">
+            <form id="chat-form" onsubmit="sendMessage(event)" class="flex gap-2">
+                <input type="text" id="chat-input" placeholder="Type a message..." class="flex-1 bg-white/50 border border-blue-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400 placeholder-blue-300 text-blue-900">
+                <button type="submit" class="bg-blue-600 text-white rounded-lg px-3 hover:bg-blue-700 transition">
+                    ➤
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <button onclick="toggleChat()" class="w-14 h-14 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full shadow-lg hover:shadow-cyan-400/50 hover:scale-110 transition transform flex items-center justify-center text-2xl text-white border-2 border-white/30 z-50">
+        💬
+    </button>
+
+</div>
+
+<script>
+    const chatWindow = document.getElementById('frosty-window');
+    const bubble = document.getElementById('frosty-bubble');
+    const messagesDiv = document.getElementById('chat-messages');
+
+    // 1. Toggle Chat Visibility
+    function toggleChat() {
+        chatWindow.classList.toggle('hidden');
+        // Hide the bubble if we open the chat
+        if (!chatWindow.classList.contains('hidden')) {
+            bubble.classList.add('hidden');
+        }
+    }
+
+    function closeBubble() {
+        bubble.classList.add('hidden');
+    }
+
+    // 2. Send Message to Backend
+    async function sendMessage(e) {
+        e.preventDefault();
+        const input = document.getElementById('chat-input');
+        const msg = input.value.trim();
+        if (!msg) return;
+
+        // Add User Message to UI
+        appendMessage(msg, 'user');
+        input.value = '';
+
+        // Show Loading State
+        const loadingId = appendMessage('Thinking...', 'bot');
+
+        try {
+            const res = await fetch('/chat_frosty', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({message: msg})
+            });
+            const data = await res.json();
+            
+            // Replace Loading with Real Response
+            document.getElementById(loadingId).innerText = data.response;
+        } catch (err) {
+            document.getElementById(loadingId).innerText = "Brain freeze! Try again.";
+        }
+    }
+
+    // Helper to add messages to the chat window
+    function appendMessage(text, sender) {
+        const div = document.createElement('div');
+        const id = 'msg-' + Date.now();
+        div.id = id;
+        
+        div.className = sender === 'user' 
+            ? "flex justify-end" 
+            : "flex justify-start";
+            
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.className = sender === 'user'
+            ? "bg-blue-600 text-white px-3 py-2 rounded-lg rounded-tr-none text-sm shadow-md max-w-[80%]"
+            : "bg-blue-100/80 text-blue-900 px-3 py-2 rounded-lg rounded-tl-none text-sm shadow-sm max-w-[80%]";
+            
+        bubbleDiv.innerText = text;
+        div.appendChild(bubbleDiv);
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto scroll
+        return id;
+    }
+
+    // 3. Proactive "Bubble Pop" Logic
+    // 30% chance to show a message on page load after 2 seconds
+    window.addEventListener('load', function() {
+        if (Math.random() > 0.7) { 
+            setTimeout(async () => {
+                // Don't show if chat is already open
+                if (!chatWindow.classList.contains('hidden')) return;
+
+                // Ask AI for a short proactive motivator
+                try {
+                    const res = await fetch('/chat_frosty', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({message: ""}) // Empty message triggers "Proactive" mode
+                    });
+                    const data = await res.json();
+                    
+                    document.getElementById('bubble-text').innerText = data.response;
+                    bubble.classList.remove('hidden');
+                    
+                    // Auto-hide after 8 seconds
+                    setTimeout(() => closeBubble(), 8000);
+                } catch(e) { console.log("Frosty sleeping"); }
+            }, 2000);
+        }
+    });
+</script>
 </body>
 </html>

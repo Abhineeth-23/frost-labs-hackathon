@@ -345,6 +345,45 @@ def calendar_view():
 def about():
     return render_template('about.html')
 
+@app.route('/chat_frosty', methods=['POST'])
+@login_required
+def chat_frosty():
+    user_msg = request.json.get('message', '')
+    
+    if not os.environ.get('GOOGLE_API_KEY'):
+        return jsonify({'response': "I'm frozen solid! (Missing API Key)"})
+
+    # 1. Build the Persona (The "System Prompt")
+    # We give the AI context about the user's progress so it's not generic.
+    streak = current_user.current_streak
+    name = current_user.name or current_user.username
+    
+    system_instruction = (
+        f"You are 'Frosty', a cool, witty, and compassionate productivity coach inside the 'Frost Journal' app. "
+        f"The user {name} has a streak of {streak} days. "
+        f"Your vibe is 'Chill but encouraging'. Use ice/cold puns sparingly. "
+        f"Keep responses short (under 2 sentences) and conversational."
+    )
+
+    try:
+        model = genai.GenerativeModel('gemini-pro')
+        
+        # 2. Handle "Proactive" vs "Reactive"
+        if not user_msg:
+            # Proactive: The user opened the chat but didn't say anything yet.
+            # Or requested a quick motivation boost.
+            prompt = f"{system_instruction} The user needs a quick 1-sentence motivation boost right now."
+        else:
+            # Reactive: The user asked a specific question.
+            prompt = f"{system_instruction} User said: '{user_msg}'. Respond helpfully."
+
+        response = model.generate_content(prompt)
+        return jsonify({'response': response.text})
+
+    except Exception as e:
+        print(f"Chat Error: {e}")
+        return jsonify({'response': "Brr... connection lost. Try again!"})
+
 # ==========================================
 #          STANDARD STEP ROUTES
 # ==========================================
