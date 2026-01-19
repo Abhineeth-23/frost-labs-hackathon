@@ -255,23 +255,24 @@ def dashboard():
 def update_step_journal(step_id):
     step = Step.query.get_or_404(step_id)
     if step.user_id != current_user.id:
-        abort(403)
+        return jsonify({'error': 'Unauthorized'}), 403
         
-    content = request.form.get('journal_content')
+    # FIX: Changed to 'content' to match the HTML textarea name
+    content = request.form.get('content') 
     
-    # Check if a log entry for today already exists for this step
-    today = date.today()
-    log = StepLog.query.filter_by(step_id=step.id, date=today).first()
+    # Update the persistent Knowledge Base (Step table)
+    step.journal_entry = content
     
-    if log:
-        log.content = content # Update existing
-    else:
-        # Create new log if it doesn't exist
-        log = StepLog(content=content, step_id=step.id, date=today)
-        db.session.add(log)
-        
-    db.session.commit()
-    flash('Journal entry saved.', 'success')
+    # Optional: logic if you also want to create a daily StepLog
+    # but primarily this saves the "Zen Mode" notes
+    
+    try:
+        db.session.commit()
+        flash('Notes saved.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Error saving notes.', 'error')
+
     return redirect(url_for('step_view', step_id=step.id))
 
 # ==========================================
@@ -608,7 +609,9 @@ def toggle_subtask(subtask_id):
         update_streak_status(current_user)
 
     db.session.commit()
-    return jsonify({'success': True, 'is_completed': subtask.is_completed})
+    
+    # FIX: Redirect back to the UI instead of returning JSON
+    return redirect(url_for('step_view', step_id=subtask.step.id))
 
 @app.route('/delete_subtask/<int:subtask_id>')
 @login_required
@@ -625,22 +628,36 @@ def delete_subtask(subtask_id):
 #          JOURNAL & PREFERENCES
 # ==========================================
 
-@app.route('/journal', methods=['POST'])
+@app.route('/update_global_journal', methods=['POST']) # Renamed to match template
 @login_required
 def update_global_journal():
     today = date.today()
+    
+    # Match the input names from dashboard.html (name="title", name="content")
+    title = request.form.get('title')
     content = request.form.get('content')
-    title = request.form.get('title', f"Entry for {today.strftime('%B %d')}")
     
     journal = GlobalJournal.query.filter_by(user_id=current_user.id, date=today).first()
     
-    if journal:
-        journal.content = content
-        journal.title = title
-    else:
-        db.session.add(GlobalJournal(content=content, title=title, user=current_user, date=today))
+    try:
+        if journal:
+            # Update existing
+            journal.content = content
+            journal.title = title
+        else:
+            # Create new
+            if not title: 
+                title = today.strftime('%B %d')
+            new_journal = GlobalJournal(content=content, title=title, user=current_user, date=today)
+            db.session.add(new_journal)
+        
+        db.session.commit()
+        flash("Journal saved.", "success")
+    except Exception as e:
+        db.session.rollback()
+        print(f"Journal Error: {e}")
+        flash("Error saving journal.", "error")
     
-    db.session.commit()
     return redirect(url_for('dashboard'))
 
 @app.route('/journal_history')

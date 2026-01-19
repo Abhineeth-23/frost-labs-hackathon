@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto pb-20 space-y-8">
+<div class="max-w-6xl mx-auto pb-20 space-y-8">
 
     <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-3xl p-8 dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -101,75 +101,74 @@
         </div>
 
         <div class="space-y-6">
+            
+            <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-3xl p-6 dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
+                <h3 class="font-black text-lg text-blue-900 dark:text-white mb-4">📆 Daily Check-in</h3>
+                <form action="{{ url_for('update_step_journal', step_id=step.id) }}" method="POST"> <textarea name="content" placeholder="What did you do today?" class="w-full h-24 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 rounded-xl p-3 text-sm focus:ring-2 focus:ring-cyan-400 outline-none dark:text-white resize-none mb-3"></textarea>
+                   <button class="w-full py-2 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-md">Log Activity</button>
+                   <p class="text-xs text-stone-400 mt-2 text-center">Added to diagnostics history</p>
+                </form>
+            </div>
+
             <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-3xl p-6 h-full flex flex-col dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-black text-xl text-blue-900 dark:text-white">📝 Notes</h3>
-                    <div class="text-xs font-bold text-stone-400 uppercase tracking-widest">Journal</div>
+                    <h3 class="font-black text-lg text-orange-600 dark:text-orange-400 flex items-center gap-2">
+                        📚 Knowledge Base
+                    </h3>
                 </div>
 
                 <div class="flex-1 cursor-pointer group flex flex-col h-full" onclick="openZenMode()">
-                    <div class="flex-1 w-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 text-stone-500 dark:text-slate-400 rounded-2xl p-5 leading-relaxed text-base group-hover:border-cyan-400 transition-colors min-h-[200px]">
+                    <div class="flex-1 w-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-orange-200 dark:border-orange-900/50 text-stone-500 dark:text-slate-400 rounded-2xl p-5 leading-relaxed text-base group-hover:border-orange-400 transition-colors min-h-[150px]">
                         {% if step.journal_entry %}
-                            {{ step.journal_entry|truncate(150) }}
+                            {{ step.journal_entry|truncate(100) }}
                         {% else %}
-                            Tap to capture your thoughts, obstacles, or wins for this specific goal...
+                            Document your learnings and insights...
                         {% endif %}
                     </div>
                     
-                    <button type="button" class="mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md rounded-xl py-3 font-bold pointer-events-none">
-                        Open Focus Editor ⤢
+                    <button type="button" class="mt-4 w-full bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-300 hover:to-orange-500 text-white shadow-md rounded-xl py-3 font-bold pointer-events-none">
+                        Open Editor ⤢
                     </button>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 
-<div id="zen-journal-modal" class="hidden fixed inset-0 z-[100] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 md:p-12 transition-all">
+<div id="zen-journal-modal" class="hidden fixed inset-0 z-[100] bg-stone-900/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 md:p-12 transition-all">
     <form action="{{ url_for('update_step_journal', step_id=step.id) }}" method="POST" class="w-full max-w-4xl flex flex-col h-full relative animate-in fade-in zoom-in duration-300">
         
         <div class="absolute top-0 right-0 flex gap-3">
-            <button type="button" onclick="generatePrompt()" class="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300 px-5 py-2 rounded-full font-bold shadow-sm hover:bg-purple-200 dark:hover:bg-purple-900/50 transition">
-                ✨ Inspire Me
-            </button>
-            <button type="button" onclick="closeZenMode()" class="bg-stone-200 dark:bg-slate-700 text-stone-600 dark:text-stone-300 px-5 py-2 rounded-full font-bold shadow-sm hover:bg-stone-300 dark:hover:bg-slate-600 transition">
-                Close
+            <button type="button" onclick="closeZenMode()" class="bg-stone-800 text-stone-300 px-5 py-2 rounded-full font-bold shadow-sm hover:bg-stone-700 transition border border-stone-700">
+                Done
             </button>
         </div>
 
-        <h2 class="text-2xl md:text-3xl font-bold text-stone-400 dark:text-slate-500 mb-8 text-center md:text-left">
-            Journaling for: <span class="text-blue-600 dark:text-blue-400">{{ step.title }}</span>
-        </h2>
+        <h2 class="text-xl font-bold text-orange-500 mb-2 uppercase tracking-widest">Knowledge Base</h2>
+        <h3 class="text-3xl font-black text-white mb-8">{{ step.title }}</h3>
         
         <textarea name="content" id="zen-content" 
-                  placeholder="What progress did you make on this goal? What's blocking you?" 
-                  class="flex-1 w-full bg-transparent text-xl md:text-2xl leading-relaxed text-slate-700 dark:text-slate-300 border-none focus:ring-0 resize-none p-0 custom-scrollbar focus:outline-none">{% if step.journal_entry %}{{ step.journal_entry }}{% endif %}</textarea>
+                  placeholder="Document your learnings here..." 
+                  class="flex-1 w-full bg-transparent text-xl md:text-2xl leading-relaxed text-stone-300 border-none focus:ring-0 resize-none p-0 custom-scrollbar focus:outline-none">{% if step.journal_entry %}{{ step.journal_entry }}{% endif %}</textarea>
 
         <div class="mt-6 flex justify-end">
-            <button class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xl shadow-lg hover:shadow-cyan-500/50 transition-all rounded-2xl px-12 py-4 font-black">
-                Save Notes
+            <button class="bg-orange-500 hover:bg-orange-400 text-white text-xl shadow-lg hover:shadow-orange-500/50 transition-all rounded-2xl px-12 py-4 font-black">
+                Save Learnings
             </button>
         </div>
     </form>
 </div>
 
 <script>
-    // ZEN MODE LOGIC
     function openZenMode() {
         document.getElementById('zen-journal-modal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden'; // Stop background scrolling
+        document.body.style.overflow = 'hidden'; 
     }
 
     function closeZenMode() {
         document.getElementById('zen-journal-modal').classList.add('hidden');
-        document.body.style.overflow = 'auto'; // Restore scrolling
-    }
-
-    const prompts = ["What is the biggest blocker right now?", "What is one small win from today?", "How does working on this make you feel?", "What is the next immediate step?"];
-    
-    function generatePrompt() { 
-        const area = document.getElementById('zen-content');
-        area.value = "✨ " + prompts[Math.floor(Math.random() * prompts.length)] + "\n\n" + area.value; 
+        document.body.style.overflow = 'auto'; 
     }
 </script>
 {% endblock %}
