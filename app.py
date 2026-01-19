@@ -11,6 +11,7 @@ from datetime import datetime, date
 import markdown # NEW
 import google.generativeai as genai # NEW
 import json
+from urllib.parse import urlencode
 
 app = Flask(__name__)
 
@@ -46,8 +47,10 @@ login_manager.init_app(app)
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# ==========================================
-#              HELPER FUNCTIONS
+# Register it so we can use it in HTML
+@app.context_processor
+def utility_processor():
+    return dict(gcal_link=generate_gcal_url)
 # ==========================================
 def get_next_birthday(dob):
     today = date.today()
@@ -178,6 +181,27 @@ def update_streak_status(user):
     
     db.session.commit()
     return todays_count
+
+# Helper to generate the Google Calendar Link
+def generate_gcal_url(step_title, deadline_date):
+    """
+    Generates a deep link to open Google Calendar with pre-filled details.
+    """
+    # Format: YYYYMMDD for all-day events
+    start_str = deadline_date.strftime('%Y%m%d')
+    # End date must be +1 day for Google Calendar all-day events
+    end_date = deadline_date + timedelta(days=1)
+    end_str = end_date.strftime('%Y%m%d')
+    
+    params = {
+        'action': 'TEMPLATE',
+        'text': f"❄️ Goal Deadline: {step_title}",
+        'details': "Reminder from Frost Journal to complete this goal today! Keep your streak alive.",
+        'dates': f"{start_str}/{end_str}",
+    }
+    
+    base_url = "https://www.google.com/calendar/render"
+    return f"{base_url}?{urlencode(params)}"
 
 # ==========================================
 #              MAIN ROUTES
