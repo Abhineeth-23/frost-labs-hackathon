@@ -421,7 +421,7 @@ def chat_frosty():
     )
 
     try:
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash-lite')
         
         # 2. Handle "Proactive" vs "Reactive"
         if not user_msg:
@@ -897,7 +897,7 @@ def generate_ai_tasks(step_id):
         return redirect(url_for('step_view', step_id=step.id))
 
     try:
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash-lite')
         
         # Prompt for structured JSON data
         prompt = (f"I have a goal: '{step.title}'. "
@@ -950,7 +950,7 @@ def diagnose_step(step_id):
               f"Use bolding for key words.")
 
     try:
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash-lite')
         response = model.generate_content(prompt)
         # Convert Markdown to HTML for the flash message
         advice_html = markdown.markdown(response.text)
