@@ -49,20 +49,6 @@ Deep-link integration allows users to one-click add goal deadlines directly to t
 ### Deployment
 * **Render Cloud Hosting**
 
----
-
-## 📸 Screenshots
-
-| The Dashboard | The Architect (AI Planning) |
-|:---:|:---:|
-| ![Dashboard](https://via.placeholder.com/400x300/0f172a/38bdf8?text=Dashboard+View) | ![Architect](https://via.placeholder.com/400x300/0f172a/38bdf8?text=AI+Generated+Tasks) |
-
-| Frosty Chat | Dark Mode |
-|:---:|:---:|
-| ![Chat](https://via.placeholder.com/400x300/0f172a/38bdf8?text=Frosty+AI+Chat) | ![Dark Mode](https://via.placeholder.com/400x300/0f172a/38bdf8?text=Night+Ice+Theme) |
-
----
-
 ## 💻 Installation & Setup
 
 To run Frost Journal locally:
