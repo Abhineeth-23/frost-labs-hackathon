@@ -35,12 +35,17 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="space-y-8">
-            <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6">
-                <h3 class="font-bold text-lg text-blue-900 mb-4 flex items-center gap-2">
-                    ❄️ Consistency
-                </h3>
-                <div class="overflow-x-auto pb-2 scrollbar-hide">
-                    <div id="heatmap-grid" class="flex gap-1.5 min-w-max"></div>
+            <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6 overflow-hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-lg text-blue-900 flex items-center gap-2">
+                        ❄️ Consistency Map
+                    </h3>
+                    <span class="text-xs font-medium text-blue-600 bg-blue-100/50 px-3 py-1 rounded-full border border-blue-200">
+                        Powered by Google Charts
+                    </span>
+                </div>
+                <div id="calendar_chart" class="w-full min-h-[200px] flex items-center justify-center">
+                    <div class="animate-pulse text-blue-400 text-sm">Loading visual data...</div>
                 </div>
             </div>
             <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6">
@@ -115,6 +120,88 @@
     </div>
 </div>
 
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    // 1. Load the Calendar package
+    google.charts.load("current", {packages:["calendar"]});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        // 2. Prepare the Data
+        var rawData = {{ heatmap_data | tojson }};
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({ type: 'date', id: 'Date' });
+        dataTable.addColumn({ type: 'number', id: 'Completed Stones' });
+
+        // Convert backend arrays [Y, M, D, V] into JS Date objects
+        var processedRows = rawData.map(function(row) {
+            return [new Date(row[0], row[1], row[2]), row[3]];
+        });
+
+        if (processedRows.length === 0) {
+            // Handle empty state (new users)
+            document.getElementById('calendar_chart').innerHTML = 
+                '<div class="text-center text-blue-800/60 py-10">Start completing steps to see your ice form! 🧊</div>';
+            return;
+        }
+
+        dataTable.addRows(processedRows);
+
+        // 3. Define the "Frost" Options
+        var chart = new google.visualization.Calendar(document.getElementById('calendar_chart'));
+
+        var options = {
+            height: 220,
+            calendar: {
+                // Formatting the "cells"
+                cellSize: 16,
+                cellColor: {
+                    stroke: '#ffffff', // White border between days
+                    strokeOpacity: 0.5,
+                    strokeWidth: 1,
+                },
+                focusedCellColor: {
+                    stroke: '#0ea5e9', // Cyan highlight on hover
+                    strokeOpacity: 1,
+                    strokeWidth: 2,
+                },
+                monthLabel: {
+                    fontName: 'sans-serif',
+                    fontSize: 12,
+                    color: '#1e3a8a', // Dark blue text
+                    bold: true,
+                },
+                monthOutlineColor: {
+                    stroke: '#bfdbfe', // Light blue month borders
+                    strokeOpacity: 0.8,
+                    strokeWidth: 2
+                },
+                unusedMonthOutlineColor: {
+                    stroke: '#eff6ff',
+                    strokeOpacity: 0.5,
+                    strokeWidth: 1
+                },
+                underMonthSpace: 16,
+            },
+            // THE FROST GRADIENT (Light Ice -> Deep Freeze)
+            colorAxis: {
+                minValue: 1,
+                colors: ['#cce3fd', '#99caff', '#60a5fa', '#2563eb'] 
+            },
+            // Remove the default background so it matches our glass card
+            backgroundColor: 'transparent', 
+        };
+
+        chart.draw(dataTable, options);
+    }
+
+    // 4. Make it Responsive (Redraw on window resize)
+    window.addEventListener('resize', function() {
+        if (google.visualization && google.visualization.DataTable) {
+            drawChart();
+        }
+    });
+</script>
 <script>
     function openRestDayModal() { document.getElementById('rest-day-modal').classList.remove('hidden'); }
     function closeRestDayModal() { document.getElementById('rest-day-modal').classList.add('hidden'); }

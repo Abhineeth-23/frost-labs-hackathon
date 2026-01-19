@@ -67,24 +67,31 @@ def get_next_birthday(dob):
         except ValueError:
             return date(today.year + 1, 2, 28)
 
+# In app.py
+
 def get_heatmap_data(user):
     """
-    Fetches all logs for the user to populate the GitHub-style heatmap.
+    Fetches logs and formats them for Google Charts Calendar.
+    Format: List of [Year, Month, Day, Count]
     """
-    logs = (
-        db.session.query(
-            StepLog.date,
-            db.func.count(db.distinct(StepLog.step_id))
-        )
-        .filter(StepLog.user_id == user.id)
-        .group_by(StepLog.date)
-        .all()
-    )
-
-        
-    data = {}
+    # 1. Fetch all logs for the user, grouped by date
+    logs = db.session.query(
+        StepLog.date, 
+        db.func.count(StepLog.id)
+    ).filter(
+        StepLog.user_id == user.id
+    ).group_by(StepLog.date).all()
+    
+    # 2. Format for JavaScript: [Year, Month-1, Day, Count]
+    # Note: JavaScript months are 0-indexed (0=Jan, 11=Dec), so we subtract 1 from the month.
+    data = []
     for log_date, count in logs:
-        data[log_date.strftime('%Y-%m-%d')] = count
+        data.append([
+            log_date.year, 
+            log_date.month - 1, # JS Month Fix 
+            log_date.day, 
+            count
+        ])
         
     return data
 
