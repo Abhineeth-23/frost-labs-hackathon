@@ -38,7 +38,6 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         <div class="space-y-8">
-            
             <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6 overflow-hidden dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="font-bold text-lg text-blue-900 dark:text-white flex items-center gap-2">
@@ -70,7 +69,6 @@
         </div>
 
         <div class="lg:col-span-2 space-y-8">
-            
             <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6 relative overflow-hidden dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
                 <div class="absolute -top-10 -right-10 w-40 h-40 bg-cyan-300/20 dark:bg-cyan-900/20 rounded-full blur-3xl pointer-events-none"></div>
                 <h3 class="font-bold text-lg text-blue-900 dark:text-white mb-4">Active "Frost" Goals</h3>
@@ -90,8 +88,8 @@
                     {% endfor %}
                     
                     <button onclick="openModal()" class="min-h-[180px] border-4 border-dashed border-white/60 dark:border-white/20 rounded-[2rem] flex flex-col items-center justify-center p-6 text-blue-300 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 hover:border-cyan-300 dark:hover:border-cyan-400 hover:bg-blue-50/80 dark:hover:bg-blue-900/20 transition group">
-                        <span class="text-4xl mb-2 group-hover:scale-110 transition">🧱</span>
-                        <span class="font-bold">Lay New Stone</span>
+                        <span class="text-4xl mb-2 group-hover:scale-110 transition">🧊</span>
+                        <span class="font-bold">Lay New Cube</span>
                     </button>
                 </div>
             </div>
@@ -103,23 +101,55 @@
                     <a href="{{ url_for('journal_history') }}" class="text-xs bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-300 px-3 py-1.5 rounded-xl hover:bg-stone-200 dark:hover:bg-stone-600 transition font-bold">📜 History</a>
                 </div>
                 
-                <form action="{{ url_for('update_global_journal') }}" method="POST" id="global-journal-container" class="flex flex-col h-full transition-all" onclick="enableZen('global-journal-container')">
-                    <input type="text" name="title" 
-                           value="{{ daily_journal.title if daily_journal else (('🌴 Rest Day: ' + special_day_reason) if special_day_reason else today_date.strftime('%B %d, %Y')) }}" 
-                           class="mb-3 w-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 rounded-lg font-black text-xl border-none focus:ring-0 p-0">
-                    
-                    <textarea id="journal-area" name="content" placeholder="Write your thoughts..." class="flex-1 min-h-[150px] w-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 rounded-lg p-4 resize-none leading-relaxed text-base">{% if daily_journal %}{{ daily_journal.content }}{% endif %}</textarea>
-                    
-                    <button class="mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md hover:shadow-lg hover:shadow-cyan-200/50 transition-all rounded-xl py-2 font-bold">Save Entry</button>
-                    
-                    <div id="zen-buttons" class="hidden absolute top-8 right-8 gap-4">
-                        <button type="button" onclick="generatePrompt(event)" class="bg-purple-100 text-purple-600 px-5 py-2 rounded-full font-bold shadow-lg hover:bg-purple-200">✨ New Prompt</button>
-                        <button type="button" onclick="disableZen(event, 'global-journal-container')" class="bg-stone-800 text-white px-6 py-2 rounded-full font-bold shadow-lg hover:scale-105 transition">Done</button>
+                <div class="flex flex-col h-full cursor-pointer group" onclick="openZenMode()">
+                    <div class="mb-3 w-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white rounded-lg font-black text-xl p-3">
+                        {{ daily_journal.title if daily_journal else (('🌴 Rest Day: ' + special_day_reason) if special_day_reason else today_date.strftime('%B %d, %Y')) }}
                     </div>
-                </form>
+                    
+                    <div class="flex-1 min-h-[150px] w-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 text-stone-400 dark:text-slate-500 rounded-lg p-4 leading-relaxed text-base group-hover:border-cyan-400 transition-colors">
+                        {% if daily_journal and daily_journal.content %}
+                            {{ daily_journal.content }}
+                        {% else %}
+                            Click here to expand and write your thoughts...
+                        {% endif %}
+                    </div>
+                    
+                    <button type="button" class="mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md rounded-xl py-2 font-bold pointer-events-none">
+                        Open Editor ⤢
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+</div>
+
+<div id="zen-journal-modal" class="hidden fixed inset-0 z-[100] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 md:p-12 transition-all">
+    <form action="{{ url_for('update_global_journal') }}" method="POST" class="w-full max-w-4xl flex flex-col h-full relative animate-in fade-in zoom-in duration-300">
+        
+        <div class="absolute top-0 right-0 flex gap-3">
+            <button type="button" onclick="generatePrompt()" class="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300 px-5 py-2 rounded-full font-bold shadow-sm hover:bg-purple-200 dark:hover:bg-purple-900/50 transition">
+                ✨ Inspire Me
+            </button>
+            <button type="button" onclick="closeZenMode()" class="bg-stone-200 dark:bg-slate-700 text-stone-600 dark:text-stone-300 px-5 py-2 rounded-full font-bold shadow-sm hover:bg-stone-300 dark:hover:bg-slate-600 transition">
+                Close
+            </button>
+        </div>
+
+        <input type="text" name="title" id="zen-title"
+               value="{{ daily_journal.title if daily_journal else (('🌴 Rest Day: ' + special_day_reason) if special_day_reason else today_date.strftime('%B %d, %Y')) }}" 
+               class="w-full bg-transparent text-4xl md:text-6xl font-black text-slate-800 dark:text-white border-none focus:ring-0 p-0 mb-8 placeholder-slate-300 dark:placeholder-slate-700 text-center md:text-left"
+               placeholder="Title your day...">
+        
+        <textarea name="content" id="zen-content" 
+                  placeholder="What's on your mind today? Start typing..." 
+                  class="flex-1 w-full bg-transparent text-xl md:text-2xl leading-relaxed text-slate-700 dark:text-slate-300 border-none focus:ring-0 resize-none p-0 custom-scrollbar focus:outline-none">{% if daily_journal %}{{ daily_journal.content }}{% endif %}</textarea>
+
+        <div class="mt-6 flex justify-end">
+            <button class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xl shadow-lg hover:shadow-cyan-500/50 transition-all rounded-2xl px-12 py-4 font-black">
+                Save & Close
+            </button>
+        </div>
+    </form>
 </div>
 
 <div id="rest-day-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-stone-900/60 backdrop-blur-sm px-4">
@@ -146,13 +176,11 @@
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
-        // Backend data passed via Jinja2
         var rawData = {{ heatmap_data | tojson }};
         var dataTable = new google.visualization.DataTable();
         dataTable.addColumn({ type: 'date', id: 'Date' });
         dataTable.addColumn({ type: 'number', id: 'Completed Stones' });
 
-        // Convert backend arrays [Y, M-1, D, Count] into JS Date objects
         var processedRows = rawData.map(function(row) {
             return [new Date(row[0], row[1], row[2]), row[3]];
         });
@@ -171,76 +199,43 @@
             height: 220,
             calendar: {
                 cellSize: 16,
-                cellColor: {
-                    stroke: '#ffffff', // White border
-                    strokeOpacity: 0.3,
-                    strokeWidth: 1,
-                },
-                focusedCellColor: {
-                    stroke: '#0ea5e9', // Cyan highlight
-                    strokeOpacity: 1,
-                    strokeWidth: 2,
-                },
-                monthLabel: {
-                    fontName: 'sans-serif',
-                    fontSize: 12,
-                    color: '#64748b', // Slate-500
-                    bold: true,
-                },
-                monthOutlineColor: {
-                    stroke: '#cbd5e1',
-                    strokeOpacity: 0.5,
-                    strokeWidth: 1
-                },
-                unusedMonthOutlineColor: {
-                    stroke: '#f1f5f9',
-                    strokeOpacity: 0.5,
-                    strokeWidth: 1
-                },
+                cellColor: { stroke: '#ffffff', strokeOpacity: 0.3, strokeWidth: 1 },
+                focusedCellColor: { stroke: '#0ea5e9', strokeOpacity: 1, strokeWidth: 2 },
+                monthLabel: { fontName: 'sans-serif', fontSize: 12, color: '#64748b', bold: true },
+                monthOutlineColor: { stroke: '#cbd5e1', strokeOpacity: 0.5, strokeWidth: 1 },
+                unusedMonthOutlineColor: { stroke: '#f1f5f9', strokeOpacity: 0.5, strokeWidth: 1 },
                 underMonthSpace: 16,
             },
-            // Frost Gradient
-            colorAxis: {
-                minValue: 1,
-                colors: ['#cce3fd', '#99caff', '#60a5fa', '#2563eb'] 
-            },
+            colorAxis: { minValue: 1, colors: ['#cce3fd', '#99caff', '#60a5fa', '#2563eb'] },
             backgroundColor: 'transparent', 
         };
-
         chart.draw(dataTable, options);
     }
-
-    // Responsive Redraw
+    
     window.addEventListener('resize', function() {
-        if (google.visualization && google.visualization.DataTable) {
-            drawChart();
-        }
+        if (google.visualization && google.visualization.DataTable) { drawChart(); }
     });
 
     // --- MODAL LOGIC ---
     function openRestDayModal() { document.getElementById('rest-day-modal').classList.remove('hidden'); }
     function closeRestDayModal() { document.getElementById('rest-day-modal').classList.add('hidden'); }
     
-    // --- ZEN MODE LOGIC ---
-    function enableZen(id) { 
-        document.getElementById(id).classList.add('zen-active'); 
-        document.body.classList.add('zen-open');
-        document.getElementById('zen-buttons').classList.remove('hidden');
-        document.getElementById('zen-buttons').classList.add('flex');
-    }
-    
-    function disableZen(e, id) { 
-        e.stopPropagation(); 
-        document.getElementById(id).classList.remove('zen-active'); 
-        document.body.classList.remove('zen-open');
-        document.getElementById('zen-buttons').classList.add('hidden');
-        document.getElementById('zen-buttons').classList.remove('flex');
+    // --- ZEN MODE LOGIC (FIXED) ---
+    // Instead of transforming the card, we open a dedicated modal at root level
+    function openZenMode() {
+        document.getElementById('zen-journal-modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Stop background scrolling
     }
 
-    const prompts = ["What was the hardest part of today?", "One thing you learned?", "3 things you are grateful for?", "Describe your mood in one word."];
-    function generatePrompt(e) { 
-        if(e) e.stopPropagation(); 
-        const area = document.getElementById('journal-area');
+    function closeZenMode() {
+        document.getElementById('zen-journal-modal').classList.add('hidden');
+        document.body.style.overflow = 'auto'; // Restore scrolling
+    }
+
+    const prompts = ["What was the hardest part of today?", "One thing you learned?", "3 things you are grateful for?", "Describe your mood in one word.", "How did you push yourself today?"];
+    
+    function generatePrompt() { 
+        const area = document.getElementById('zen-content');
         area.value = "✨ " + prompts[Math.floor(Math.random() * prompts.length)] + "\n\n" + area.value; 
     }
 </script>
