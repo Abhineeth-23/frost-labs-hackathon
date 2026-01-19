@@ -1,24 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="flex flex-col md:flex-row justify-between items-start mb-6 border-b dark:border-gray-700 pb-4">
+<div class="flex flex-col md:flex-row justify-between items-start mb-6 border-b border-stone-200 dark:border-slate-700 pb-4">
     <div>
         <div class="flex items-center gap-3 mb-1">
-            <h1 class="text-3xl font-bold dark:text-white">{{ step.title }}</h1>
-            <span class="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-gray-600 dark:text-gray-300">{{ step.category }}</span>
+            <h1 class="text-3xl font-bold text-blue-900 dark:text-white">{{ step.title }}</h1>
+            <span class="text-xs bg-stone-100 dark:bg-slate-700 px-2 py-1 rounded text-stone-600 dark:text-slate-300">{{ step.category }}</span>
         </div>
         
         {% if days_remaining is not none %}
-            <p>{{ days_remaining }} days remaining</p>
+            <p class="text-stone-500 dark:text-slate-400">{{ days_remaining }} days remaining</p>
         {% endif %}
 
-        <p class="text-sm {{ 'text-red-500 font-bold' if days_remaining < 3 else 'text-gray-500' }}">
+        <p class="text-sm {{ 'text-red-500 dark:text-red-400 font-bold' if days_remaining < 3 else 'text-stone-500 dark:text-slate-400' }}">
             Target: {{ step.deadline_date.strftime('%b %d, %Y') }} 
             ({% if days_remaining < 0 %}Overdue{% else %}{{ days_remaining }} days left{% endif %})
         </p>
 
         <a href="{{ gcal_link(step.title, step.deadline_date) }}" 
            target="_blank"
-           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/40 border border-blue-200 text-blue-700 font-semibold hover:bg-white/60 hover:text-blue-900 hover:shadow-lg hover:shadow-blue-200/50 transition-all transform hover:-translate-y-0.5 backdrop-blur-sm">
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/40 dark:bg-slate-900/50 border border-blue-200 dark:border-slate-700 text-blue-700 dark:text-cyan-300 font-semibold hover:bg-white/60 dark:hover:bg-slate-800/60 hover:shadow-lg hover:shadow-blue-200/50 dark:hover:shadow-cyan-900/50 transition-all transform hover:-translate-y-0.5 backdrop-blur-sm">
             
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5v-5z"/>
@@ -28,37 +28,37 @@
         </a>
     </div>
     
-    <div class="flex gap-2 mt-4 md:mt-0">
-        <button onclick="shareStep({{ step.id }})" class="bg-green-600 text-white px-4 py-2 rounded font-bold hover:bg-green-700 flex items-center gap-2 shadow-lg">
+    <div class="flex gap-3 mt-4 md:mt-0">
+        <button onclick="shareStep({{ step.id }})" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 flex items-center gap-2 shadow-lg hover:shadow-green-200/50 transition-all">
             <span>🔗 Share</span>
         </button>
-        <button onclick="openTimer()" class="bg-indigo-600 text-white px-4 py-2 rounded font-bold hover:bg-indigo-700 flex items-center gap-2 shadow-lg">
+        <button onclick="openTimer()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-indigo-700 flex items-center gap-2 shadow-lg hover:shadow-indigo-200/50 transition-all">
             <span>⏱️ Focus</span>
         </button>
-        <button onclick="openEditModal()" class="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+        <button onclick="openEditModal()" class="bg-stone-100 dark:bg-slate-700 text-stone-700 dark:text-slate-200 px-4 py-2 rounded-lg font-bold hover:bg-stone-200 dark:hover:bg-slate-600 transition">
             ⚙️
         </button>
-        <a href="{{ url_for('dashboard') }}" class="text-blue-500 hover:underline text-sm flex items-center px-2">Back</a>
+        <a href="{{ url_for('dashboard') }}" class="text-blue-500 dark:text-cyan-300 hover:underline text-sm flex items-center px-3 py-2">Back</a>
     </div>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-fit min-h-[60vh]">
-    <div class="md:col-span-1 bg-white dark:bg-gray-800 p-6 rounded shadow border dark:border-gray-700">
-        <h2 class="font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">✅ Sub-Steps</h2>
+    <div class="md:col-span-1 backdrop-blur-lg bg-white/40 dark:bg-slate-900/50 border border-white/50 dark:border-white/10 shadow-xl dark:shadow-blue-900/20 p-6 rounded-2xl">
+        <h2 class="font-bold text-blue-900 dark:text-white mb-4 flex items-center gap-2">✅ Sub-Steps</h2>
         <div class="space-y-3 mb-4">
             {% for sub in step.subtasks %}
             <div class="flex items-start gap-3 group">
                 <input type="checkbox" onchange="toggleSubtask(this, {{ sub.id }})" class="mt-1 w-4 h-4 text-blue-600 rounded cursor-pointer" {% if sub.is_completed %}checked{% endif %}>
-                <span class="flex-1 text-sm dark:text-gray-200 {{ 'line-through text-gray-400' if sub.is_completed else '' }}" id="text-{{ sub.id }}">{{ sub.text }}</span>
+                <span class="flex-1 text-sm text-stone-700 dark:text-slate-200 {{ 'line-through text-stone-400 dark:text-slate-500' if sub.is_completed else '' }}" id="text-{{ sub.id }}">{{ sub.text }}</span>
                 <a href="{{ url_for('delete_subtask', subtask_id=sub.id) }}" class="text-xs text-red-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">✕</a>
             </div>
             {% else %}
-            <p class="text-xs text-gray-400 italic">No subtasks yet.</p>
+            <p class="text-xs text-stone-400 dark:text-slate-500 italic">No subtasks yet.</p>
             {% endfor %}
         </div>
         <form action="{{ url_for('add_subtask', step_id=step.id) }}" method="POST" class="flex gap-2 mt-auto">
-            <input type="text" name="subtask_text" placeholder="Add small step..." class="flex-1 border dark:border-gray-600 p-2 text-sm rounded dark:bg-gray-700 dark:text-white" required>
-            <button class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 px-3 rounded text-lg font-bold text-blue-500">+</button>
+            <input type="text" name="subtask_text" placeholder="Add small step..." class="flex-1 bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 p-2 text-sm rounded-lg focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 outline-none" required>
+            <button class="bg-stone-100 dark:bg-slate-700 hover:bg-stone-200 dark:hover:bg-slate-600 px-3 rounded-lg text-lg font-bold text-blue-500 dark:text-cyan-300">+</button>
         </form>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <form action="{{ url_for('generate_ai_tasks', step_id=step.id) }}" method="POST">
@@ -76,55 +76,61 @@
     </div>
 
     <div class="md:col-span-2 grid grid-cols-1 gap-6">
-        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded shadow flex flex-col border border-blue-200 dark:border-blue-700/50">
+        <div class="backdrop-blur-lg bg-blue-50/80 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 shadow-xl dark:shadow-blue-900/20 p-6 rounded-2xl flex flex-col">
             <h2 class="font-bold text-blue-800 dark:text-blue-400 mb-2 flex items-center gap-2">📝 Today's Log</h2>
             <form action="" method="POST" id="log-container" class="flex-1 flex flex-col mb-4" onclick="enableZen('log-container')">
-                <textarea id="log-textarea" name="log_content" class="flex-1 w-full bg-white/50 dark:bg-gray-900/50 border border-blue-200 dark:border-blue-800 p-4 rounded resize-none focus:outline-none dark:text-gray-200" placeholder="What did you do today?">{{ todays_log.content if todays_log else '' }}</textarea>
-                <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">{{ 'Update Log' if todays_log else 'Log & Boost Streak 🚀' }}</button>
-                <button type="button" onclick="disableZen(event, 'log-container')" class="zen-overlay-btn bg-white text-black px-6 py-2 rounded-full font-bold shadow-lg">Done</button>
+                <textarea id="log-textarea" name="log_content" class="flex-1 w-full bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 p-4 rounded-lg resize-none focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 outline-none" placeholder="What did you do today?">{{ todays_log.content if todays_log else '' }}</textarea>
+                <button class="mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-4 py-2 rounded-lg hover:from-cyan-400 hover:to-blue-500 shadow-md hover:shadow-lg hover:shadow-cyan-200/50 transition-all">{{ 'Update Log' if todays_log else 'Log & Boost Streak 🚀' }}</button>
+                <button type="button" onclick="disableZen(event, 'log-container')" class="zen-overlay-btn bg-white dark:bg-slate-700 text-stone-900 dark:text-white px-6 py-2 rounded-full font-bold shadow-lg">Done</button>
             </form>
-            <div class="max-h-40 overflow-y-auto border-t dark:border-gray-700 pt-2">
-                <h4 class="text-xs font-bold text-gray-500 mb-2">HISTORY</h4>
+            <div class="max-h-40 overflow-y-auto border-t border-stone-200 dark:border-slate-700 pt-2">
+                <h4 class="text-xs font-bold text-stone-500 dark:text-slate-400 mb-2">HISTORY</h4>
                 {% for log in history %}
                     {% if log.date != todays_log.date %}
-                    <div class="bg-white dark:bg-gray-800 p-3 rounded mb-2 text-sm dark:text-gray-300 shadow-sm"><span class="text-xs text-gray-400 block">{{ log.date }}</span>{{ log.content }}</div>
+                    <div class="backdrop-blur-sm bg-white/40 dark:bg-slate-900/50 p-3 rounded-lg mb-2 text-sm text-stone-700 dark:text-slate-200 shadow-sm"><span class="text-xs text-stone-400 dark:text-slate-500 block">{{ log.date }}</span>{{ log.content }}</div>
                     {% endif %}
                 {% endfor %}
             </div>
         </div>
 
-        <div class="bg-yellow-50 dark:bg-yellow-900/20 p-6 rounded shadow flex flex-col border border-yellow-200 dark:border-yellow-700/50">
+        <div class="backdrop-blur-lg bg-yellow-50/80 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/50 shadow-xl dark:shadow-blue-900/20 p-6 rounded-2xl flex flex-col">
             <h2 class="font-bold text-yellow-800 dark:text-yellow-500 mb-2">📖 Knowledge Base</h2>
             <form action="" method="POST" id="overview-container" class="flex-1 flex flex-col" onclick="enableZen('overview-container')">
-                <textarea name="overview_content" class="flex-1 w-full bg-white/50 dark:bg-gray-900/50 border border-yellow-200 dark:border-yellow-800 p-4 rounded resize-none focus:outline-none dark:text-gray-200 min-h-[100px]">{{ step.overview_content }}</textarea>
-                <button class="mt-4 bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">Save Overview</button>
-                <button type="button" onclick="disableZen(event, 'overview-container')" class="zen-overlay-btn bg-white text-black px-6 py-2 rounded-full font-bold shadow-lg">Done</button>
+                <textarea name="overview_content" class="flex-1 w-full bg-white/60 dark:bg-slate-800/50 border border-yellow-200 dark:border-yellow-700 text-yellow-900 dark:text-white placeholder-yellow-600 dark:placeholder-yellow-400 p-4 rounded-lg resize-none focus:ring-2 focus:ring-yellow-400 dark:focus:ring-yellow-500 focus:border-yellow-500 dark:focus:border-yellow-500 outline-none min-h-[100px]" placeholder="Document your learnings and insights...">{{ step.overview_content }}</textarea>
+                <button class="mt-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg hover:from-yellow-400 hover:to-orange-400 shadow-md hover:shadow-lg hover:shadow-yellow-200/50 transition-all">Save Overview</button>
+                <button type="button" onclick="disableZen(event, 'overview-container')" class="zen-overlay-btn bg-white dark:bg-slate-700 text-stone-900 dark:text-white px-6 py-2 rounded-full font-bold shadow-lg">Done</button>
             </form>
         </div>
     </div>
 </div>
 
-<div id="edit-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm">
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-lg border dark:border-gray-700">
-        <h2 class="text-2xl font-bold mb-6 dark:text-white border-b dark:border-gray-700 pb-2">Edit Settings</h2>
+<div id="edit-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-stone-900/60 backdrop-blur-sm px-4">
+    <div class="backdrop-blur-xl bg-white/50 dark:bg-slate-900/80 border border-white/60 dark:border-white/10 shadow-2xl w-full max-w-lg p-8 rounded-2xl">
+        <h2 class="text-2xl font-bold mb-6 text-blue-900 dark:text-white border-b border-stone-200 dark:border-slate-700 pb-2">Edit Settings</h2>
         <form action="{{ url_for('edit_step', step_id=step.id) }}" method="POST" class="space-y-4">
-            <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1">Title</label><input type="text" name="title" value="{{ step.title }}" class="w-full border p-2 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" required></div>
-            <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1">Category</label><input type="text" name="category" value="{{ step.category }}" class="w-full border p-2 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"></div>
+            <div><label class="block text-xs font-bold uppercase text-stone-500 dark:text-slate-400 mb-1">Title</label><input type="text" name="title" value="{{ step.title }}" class="w-full bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 p-2 rounded-lg focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 outline-none" required></div>
+            <div><label class="block text-xs font-bold uppercase text-stone-500 dark:text-slate-400 mb-1">Category</label><input type="text" name="category" value="{{ step.category }}" class="w-full bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 p-2 rounded-lg focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 outline-none"></div>
             <div class="grid grid-cols-2 gap-4">
-                <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1">Duration</label><select name="timeframe" class="w-full border p-2 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"><option value="Weekly" {% if step.timeframe == 'Weekly' %}selected{% endif %}>Weekly</option><option value="Monthly" {% if step.timeframe == 'Monthly' %}selected{% endif %}>Monthly</option><option value="Yearly" {% if step.timeframe == 'Yearly' %}selected{% endif %}>Yearly</option></select></div>
-                <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1">Deadline Mode</label><select name="deadline_mode" class="w-full border p-2 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"><option value="rolling" {% if step.deadline_mode == 'rolling' %}selected{% endif %}>Rolling</option><option value="calendar" {% if step.deadline_mode == 'calendar' %}selected{% endif %}>Calendar</option></select></div>
+                <div><label class="block text-xs font-bold uppercase text-stone-500 dark:text-slate-400 mb-1">Duration</label><select name="timeframe" class="w-full bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white p-2 rounded-lg focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 outline-none"><option value="Weekly" {% if step.timeframe == 'Weekly' %}selected{% endif %}>Weekly</option><option value="Monthly" {% if step.timeframe == 'Monthly' %}selected{% endif %}>Monthly</option><option value="Yearly" {% if step.timeframe == 'Yearly' %}selected{% endif %}>Yearly</option></select></div>
+                <div><label class="block text-xs font-bold uppercase text-stone-500 dark:text-slate-400 mb-1">Deadline Mode</label><select name="deadline_mode" class="w-full bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white p-2 rounded-lg focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 outline-none"><option value="rolling" {% if step.deadline_mode == 'rolling' %}selected{% endif %}>Rolling</option><option value="calendar" {% if step.deadline_mode == 'calendar' %}selected{% endif %}>Calendar</option></select></div>
             </div>
-            <div class="flex justify-end gap-3 pt-4 border-t dark:border-gray-700 mt-4"><button type="button" onclick="closeEditModal()" class="px-4 py-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">Cancel</button><button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded font-bold hover:bg-blue-700">Save</button></div>
+            <div class="flex justify-end gap-4 pt-4 border-t border-stone-200 dark:border-slate-700 mt-4"><button type="button" onclick="closeEditModal()" class="px-4 py-2 text-stone-500 dark:text-slate-400 hover:bg-stone-100 dark:hover:bg-slate-800 rounded-lg transition">Cancel</button><button type="submit" class="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg font-bold hover:from-cyan-400 hover:to-blue-500 shadow-md hover:shadow-lg hover:shadow-cyan-200/50 transition-all">Save</button></div>
         </form>
     </div>
 </div>
 
-<div id="timer-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm">
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl text-center w-full max-w-sm border border-gray-700">
-        <h2 class="text-gray-500 uppercase text-xs font-bold tracking-widest mb-4">Focus Mode</h2>
-        <div class="text-6xl font-black mb-6 tabular-nums dark:text-white" id="timer-display">25:00</div>
-        <div id="timer-controls" class="mb-6 flex justify-center items-center gap-2"><label class="text-xs text-gray-400">Minutes:</label><input type="number" id="custom-minutes" value="25" min="1" max="180" class="w-16 border p-1 rounded text-center dark:bg-gray-700 dark:text-white font-bold"></div>
-        <div class="grid grid-cols-2 gap-4 mb-6"><button onclick="startTimer()" id="start-btn" class="bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700">Start</button><button onclick="closeTimer()" class="bg-gray-200 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-300">Exit</button></div>
+<div id="timer-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-stone-900/60 backdrop-blur-sm px-4">
+    <div class="backdrop-blur-xl bg-white/50 dark:bg-slate-900/80 border border-white/60 dark:border-white/10 shadow-2xl text-center w-full max-w-sm p-8 rounded-2xl">
+        <h2 class="text-stone-500 dark:text-slate-400 uppercase text-xs font-bold tracking-widest mb-4">Focus Mode</h2>
+        <div class="text-6xl font-black mb-6 tabular-nums text-blue-900 dark:text-white" id="timer-display">25:00</div>
+        <div id="timer-controls" class="mb-6 flex justify-center items-center gap-2">
+            <label class="text-xs text-stone-500 dark:text-slate-400">Minutes:</label>
+            <input type="number" id="custom-minutes" value="25" min="1" max="180" class="w-16 bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 p-2 rounded-lg focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 outline-none text-center font-bold">
+        </div>
+        <div class="grid grid-cols-2 gap-6 mb-6">
+            <button onclick="startTimer()" id="start-btn" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-lg font-bold hover:from-indigo-400 hover:to-purple-500 shadow-md hover:shadow-lg hover:shadow-indigo-200/50 transition-all">Start</button>
+            <button onclick="closeTimer()" class="bg-stone-100 dark:bg-slate-700 text-stone-700 dark:text-slate-200 py-3 rounded-lg font-bold hover:bg-stone-200 dark:hover:bg-slate-600 transition">Exit</button>
+        </div>
     </div>
 </div>
 

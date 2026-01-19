@@ -1,40 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="max-w-md mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg border dark:border-gray-700 mt-10">
-    <h2 class="text-2xl font-bold mb-6 text-center dark:text-white">Join Stepping Stones</h2>
+<div class="max-w-md mx-auto backdrop-blur-lg bg-white/40 dark:bg-slate-900/50 border border-white/50 dark:border-white/10 shadow-xl dark:shadow-blue-900/20 p-8 rounded-2xl mt-10">
+    <h2 class="text-2xl font-bold mb-6 text-center text-blue-900 dark:text-white">Join Stepping Stones</h2>
     
     <form method="POST" class="space-y-4">
         <div>
-            <label class="block text-sm font-bold text-gray-500 mb-1">Full Name</label>
-            <input type="text" name="name" class="w-full border p-2 rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="John Doe" required>
+            <label class="block text-sm font-bold text-stone-500 dark:text-slate-400 mb-1">Full Name</label>
+            <input type="text" name="name" class="w-full bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 p-2 rounded-lg focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 outline-none" placeholder="John Doe" required>
         </div>
 
         <div>
-            <label class="block text-sm font-bold text-gray-500 mb-1">Username</label>
-            <input type="text" name="username" class="w-full border p-2 rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="johndoe123" required>
+            <label class="block text-sm font-bold text-stone-500 dark:text-slate-400 mb-1">Username</label>
+            <input type="text" name="username" class="w-full bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 p-2 rounded-lg focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 outline-none" placeholder="johndoe123" required>
         </div>
 
         <div>
-            <label class="block text-sm font-bold text-gray-500 mb-1">Email</label>
-            <input type="email" name="email" class="w-full border p-2 rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="john@example.com" required>
+            <label class="block text-sm font-bold text-stone-500 dark:text-slate-400 mb-1">Email</label>
+            <input type="email" name="email" class="w-full bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 p-2 rounded-lg focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 outline-none" placeholder="john@example.com" required>
         </div>
 
         <div>
-            <label class="block text-sm font-bold text-gray-500 mb-1">Date of Birth</label>
-            <input type="date" name="dob" class="w-full border p-2 rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" required>
-            <p class="text-xs text-blue-500 mt-1">We'll automatically set this as a Rest Day! 🎂</p>
+            <label class="block text-sm font-bold text-stone-500 dark:text-slate-400 mb-1">Date of Birth</label>
+            <input type="date" name="dob" class="w-full bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white p-2 rounded-lg focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 outline-none" required>
+            <p class="text-xs text-blue-500 dark:text-cyan-300 mt-1">We'll automatically set this as a Rest Day! 🎂</p>
         </div>
 
         <div>
-            <label class="block text-sm font-bold text-gray-500 mb-1">Password</label>
-            <input type="password" name="password" class="w-full border p-2 rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="••••••••" required>
+            <label class="block text-sm font-bold text-stone-500 dark:text-slate-400 mb-1">Password</label>
+            <input type="password" name="password" class="w-full bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 p-2 rounded-lg focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 outline-none" placeholder="••••••••" required>
         </div>
 
-        <button class="w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700 transition">Create Account</button>
+        <button class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-2 rounded-lg font-bold hover:from-cyan-400 hover:to-blue-500 shadow-md hover:shadow-lg hover:shadow-cyan-200/50 transition-all">Create Account</button>
     </form>
     
-    <p class="text-center mt-4 text-sm text-gray-500">
-        Already have an account? <a href="{{ url_for('login') }}" class="text-blue-500 font-bold hover:underline">Login</a>
+    <p class="text-center mt-4 text-sm text-stone-500 dark:text-slate-400">
+        Already have an account? <a href="{{ url_for('login') }}" class="text-blue-500 dark:text-cyan-300 font-bold hover:text-blue-600 dark:hover:text-cyan-200 hover:underline">Login</a>
     </p>
 </div>
 {% endblock %}

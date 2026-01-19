@@ -34,9 +34,9 @@
             <form id="edit-{{ journal.id }}" action="{{ url_for('edit_old_journal', id=journal.id) }}" method="POST" class="hidden mt-4">
                 <input type="text" name="title" value="{{ journal.title }}" class="w-full border-b mb-2 p-2 dark:bg-gray-700 dark:text-white dark:border-gray-600 font-bold focus:outline-none">
                 <textarea name="content" class="w-full h-32 border p-2 rounded dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:outline-none resize-none">{{ journal.content }}</textarea>
-                <div class="flex justify-end gap-2 mt-2">
-                    <button type="button" onclick="toggleEdit('edit-{{ journal.id }}')" class="text-xs text-gray-500">Cancel</button>
-                    <button class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-bold">Save Changes</button>
+                <div class="flex justify-end gap-3 mt-2">
+                    <button type="button" onclick="toggleEdit('edit-{{ journal.id }}')" class="text-xs text-gray-500 px-3 py-1">Cancel</button>
+                    <button class="bg-blue-600 text-white px-4 py-1 rounded text-xs font-bold">Save Changes</button>
                 </div>
             </form>
             {% endif %}

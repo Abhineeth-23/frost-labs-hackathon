@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="max-w-6xl mx-auto space-y-8 pb-20">
-    <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-3xl p-6 mb-8 text-blue-900">
+    <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-3xl p-6 mb-8 text-blue-900 dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
         <div class="flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="text-center md:text-left">
-                <h2 class="text-5xl md:text-7xl font-black dark:text-white flex flex-col md:flex-row items-center md:items-end gap-2 tracking-tighter leading-none">
+                <h2 class="text-5xl md:text-7xl font-black text-slate-800 dark:text-white flex flex-col md:flex-row items-center md:items-end gap-2 tracking-tighter leading-none">
                     <span>{{ user.current_streak }}</span>
-                    <span class="text-xl md:text-2xl font-bold opacity-50 mb-1.5 uppercase tracking-widest">Days</span>
+                    <span class="text-xl md:text-2xl font-bold text-slate-600 dark:text-slate-300 mb-1.5 uppercase tracking-widest">Days</span>
                 </h2>
                 
                 <div class="flex flex-wrap justify-center md:justify-start gap-2 mt-4">
@@ -22,12 +22,12 @@
             </div>
 
             <div class="text-center md:text-right">
-                <div class="text-6xl md:text-8xl font-black tracking-tighter transition-colors duration-500 {{ 'text-green-600' if progress >= user.daily_target else 'text-orange-500' }}">
+                <div class="text-6xl md:text-8xl font-black tracking-tighter transition-colors duration-500 text-slate-800 dark:text-white">
                     {{ progress }}<span class="text-4xl text-stone-300 dark:text-stone-600">/{{ user.daily_target }}</span>
                 </div>
-                <div class="inline-flex bg-white/50 dark:bg-stone-900/50 backdrop-blur rounded-full p-1 gap-1 mt-2">
-                    <a href="{{ url_for('adjust_target', action='decrease') }}" class="w-8 h-8 flex items-center justify-center hover:bg-white rounded-full font-bold text-stone-400 transition">-</a>
-                    <a href="{{ url_for('adjust_target', action='increase') }}" class="w-8 h-8 flex items-center justify-center hover:bg-white rounded-full font-bold text-stone-400 transition">+</a>
+                <div class="inline-flex bg-white/50 dark:bg-stone-900/50 backdrop-blur rounded-full p-1 gap-2 mt-2">
+                    <a href="{{ url_for('adjust_target', action='decrease') }}" class="w-8 h-8 flex items-center justify-center hover:bg-white dark:hover:bg-slate-700 rounded-full font-bold text-stone-400 dark:text-stone-500 transition">-</a>
+                    <a href="{{ url_for('adjust_target', action='increase') }}" class="w-8 h-8 flex items-center justify-center hover:bg-white dark:hover:bg-slate-700 rounded-full font-bold text-stone-400 dark:text-stone-500 transition">+</a>
                 </div>
             </div>
         </div>
@@ -35,23 +35,23 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="space-y-8">
-            <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6 overflow-hidden">
+            <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6 overflow-hidden dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-lg text-blue-900 flex items-center gap-2">
+                    <h3 class="font-bold text-lg text-blue-900 dark:text-white flex items-center gap-2">
                         ❄️ Consistency Map
                     </h3>
-                    <span class="text-xs font-medium text-blue-600 bg-blue-100/50 px-3 py-1 rounded-full border border-blue-200">
+                    <span class="text-xs font-medium text-blue-600 dark:text-cyan-300 bg-blue-100/50 dark:bg-blue-900/40 px-3 py-1 rounded-full border border-blue-200 dark:border-blue-700">
                         Powered by Google Charts
                     </span>
                 </div>
                 <div id="calendar_chart" class="w-full min-h-[200px] flex items-center justify-center">
-                    <div class="animate-pulse text-blue-400 text-sm">Loading visual data...</div>
+                    <div class="animate-pulse text-blue-400 dark:text-blue-300 text-sm">Loading visual data...</div>
                 </div>
             </div>
-            <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6">
+            <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6 dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
                 <div class="flex justify-between items-end mb-4">
-                    <h3 class="text-xs font-black uppercase tracking-widest text-stone-400">My Path</h3>
-                    <div class="flex gap-2 text-[10px] font-bold text-stone-400">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-stone-400 dark:text-slate-400">My Path</h3>
+                    <div class="flex gap-2 text-[10px] font-bold text-stone-400 dark:text-slate-500">
                         <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-purple-400"></div> Rest</span>
                         <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-orange-500"></div> Work</span>
                     </div>
@@ -59,44 +59,44 @@
             </div>
         </div>
         <div class="lg:col-span-2 space-y-8">
-            <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6 relative overflow-hidden">
-                <div class="absolute -top-10 -right-10 w-40 h-40 bg-cyan-300/20 rounded-full blur-3xl pointer-events-none"></div>
-                <h3 class="font-bold text-lg text-blue-900 mb-4">Active "Frost" Goals</h3>
+            <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6 relative overflow-hidden dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-cyan-300/20 dark:bg-cyan-900/20 rounded-full blur-3xl pointer-events-none"></div>
+                <h3 class="font-bold text-lg text-blue-900 dark:text-white mb-4">Active "Frost" Goals</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {% for step in steps %}
-                    <a href="{{ url_for('step_view', step_id=step.id) }}" class="group relative flex flex-col justify-between bg-white dark:bg-stone-800 p-6 rounded-[2rem] shadow-lg shadow-stone-200/50 dark:shadow-none border-2 border-white dark:border-stone-700 hover:border-orange-300 dark:hover:border-orange-500 transition-all hover:-translate-y-1">
+                    <a href="{{ url_for('step_view', step_id=step.id) }}" class="group relative flex flex-col justify-between backdrop-blur-lg bg-white/40 dark:bg-slate-900/50 border border-white/50 dark:border-white/10 shadow-xl dark:shadow-blue-900/20 p-6 rounded-[2rem] hover:border-cyan-300 dark:hover:border-cyan-400 transition-all hover:-translate-y-1">
                         <div class="flex justify-between items-start mb-4">
-                            <span class="text-[10px] font-black uppercase text-stone-400">{{ step.category }}</span>
-                            <span class="text-[10px] bg-stone-100 dark:bg-stone-700 text-stone-500 px-2 py-1 rounded-full font-bold">{{ step.timeframe }}</span>
+                            <span class="text-[10px] font-black uppercase text-stone-400 dark:text-slate-400">{{ step.category }}</span>
+                            <span class="text-[10px] bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-slate-300 px-2 py-1 rounded-full font-bold">{{ step.timeframe }}</span>
                         </div>
-                        <h3 class="text-xl font-bold text-stone-800 dark:text-stone-100 mb-6 leading-tight">{{ step.title }}</h3>
+                        <h3 class="text-xl font-bold text-stone-800 dark:text-white mb-6 leading-tight">{{ step.title }}</h3>
                         <div class="w-full bg-stone-100 dark:bg-stone-900 h-1.5 rounded-full overflow-hidden">
-                            <div class="h-full bg-orange-400 w-1/3 group-hover:w-1/2 transition-all duration-700 rounded-full"></div>
+                            <div class="h-full bg-cyan-400 dark:bg-cyan-500 w-1/3 group-hover:w-1/2 transition-all duration-700 rounded-full"></div>
                         </div>
                     </a>
                     {% endfor %}
-                    <button onclick="openModal()" class="min-h-[180px] border-4 border-dashed border-white/60 rounded-[2rem] flex flex-col items-center justify-center p-6 text-blue-300 hover:text-blue-600 hover:border-cyan-300 hover:bg-blue-50/80 transition group">
+                    <button onclick="openModal()" class="min-h-[180px] border-4 border-dashed border-white/60 dark:border-white/20 rounded-[2rem] flex flex-col items-center justify-center p-6 text-blue-300 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 hover:border-cyan-300 dark:hover:border-cyan-400 hover:bg-blue-50/80 dark:hover:bg-blue-900/20 transition group">
                         <span class="text-4xl mb-2 group-hover:scale-110 transition">🧱</span>
                         <span class="font-bold">Lay New Stone</span>
                     </button>
                 </div>
             </div>
-            <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6">
+            <div class="backdrop-blur-lg bg-white/40 border border-white/50 shadow-xl rounded-2xl p-6 dark:bg-slate-900/50 dark:border-white/10 dark:shadow-blue-900/20">
                 <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-purple-400 to-indigo-400"></div>
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-black dark:text-white flex items-center gap-2">📓 Daily Journal</h2>
-                    <a href="{{ url_for('journal_history') }}" class="text-xs bg-stone-100 text-stone-500 px-3 py-1.5 rounded-xl hover:bg-stone-200 dark:bg-stone-700 dark:text-stone-300 transition font-bold">📜 History</a>
+                    <h2 class="text-lg font-black text-blue-900 dark:text-white flex items-center gap-2">📓 Daily Journal</h2>
+                    <a href="{{ url_for('journal_history') }}" class="text-xs bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-300 px-3 py-1.5 rounded-xl hover:bg-stone-200 dark:hover:bg-stone-600 transition font-bold">📜 History</a>
                 </div>
                 <form action="{{ url_for('update_global_journal') }}" method="POST" id="global-journal-container" class="flex flex-col h-full" onclick="enableZen('global-journal-container')">
                     <input type="text" name="title" 
                            value="{{ daily_journal.title if daily_journal else (('🌴 Rest Day: ' + special_day_reason) if special_day_reason else today_date.strftime('%B %d, %Y')) }}" 
-                           class="mb-3 w-full bg-white/50 backdrop-blur-sm border border-blue-200 text-blue-900 placeholder-blue-400 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-400 rounded-lg font-black text-xl border-none focus:ring-0 p-0">
+                           class="mb-3 w-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 rounded-lg font-black text-xl border-none focus:ring-0 p-0">
                     
-                    <textarea id="journal-area" name="content" placeholder="Write your thoughts..." class="flex-1 min-h-[150px] w-full bg-white/50 backdrop-blur-sm border border-blue-200 text-blue-900 placeholder-blue-400 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-400 rounded-lg p-4 resize-none leading-relaxed text-base">{{ daily_journal.content if daily_journal else '' }}</textarea>
+                    <textarea id="journal-area" name="content" placeholder="Write your thoughts..." class="flex-1 min-h-[150px] w-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 rounded-lg p-4 resize-none leading-relaxed text-base">
                     
                     <button class="mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md hover:shadow-lg hover:shadow-cyan-200/50 transition-all rounded-xl">Save Entry</button>
                     
-                    <div id="zen-buttons" class="hidden absolute top-8 right-8 gap-3">
+                    <div id="zen-buttons" class="hidden absolute top-8 right-8 gap-4">
                         <button type="button" onclick="generatePrompt(event)" class="bg-purple-100 text-purple-600 px-5 py-2 rounded-full font-bold shadow-lg hover:bg-purple-200">✨ New Prompt</button>
                         <button type="button" onclick="disableZen(event, 'global-journal-container')" class="bg-stone-800 text-white px-6 py-2 rounded-full font-bold shadow-lg hover:scale-105 transition">Done</button>
                     </div>
@@ -107,13 +107,13 @@
 </div>
 
 <div id="rest-day-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-stone-900/60 backdrop-blur-sm px-4">
-    <div class="bg-white dark:bg-stone-800 p-8 rounded-3xl shadow-2xl w-full max-w-md border-4 border-white dark:border-stone-700">
-        <h2 class="text-2xl font-black mb-1 dark:text-white">Plan a Special Day</h2>
+    <div class="backdrop-blur-xl bg-white/50 dark:bg-slate-900/80 border border-white/60 dark:border-white/10 shadow-2xl w-full max-w-md p-8 rounded-3xl">
+        <h2 class="text-2xl font-black mb-1 text-blue-900 dark:text-white">Plan a Special Day</h2>
         <form action="{{ url_for('add_custom_date') }}" method="POST" class="space-y-4 mt-4">
-            <input type="date" name="date" class="w-full border-2 border-stone-100 p-3 rounded-xl dark:bg-stone-900 dark:border-stone-700 font-bold dark:text-white" required>
-            <input type="text" name="reason" placeholder="Reason (e.g. Birthday)" class="w-full bg-white/50 backdrop-blur-sm border border-blue-200 text-blue-900 placeholder-blue-400 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-400 rounded-lg p-3 font-bold" required>
-            <div class="pt-4 flex justify-end gap-3">
-                <button type="button" onclick="closeRestDayModal()" class="px-6 py-3 rounded-xl font-bold text-blue-900/80 hover:bg-blue-50 transition">Cancel</button>
+            <input type="date" name="date" class="w-full bg-white/60 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 p-3 rounded-xl font-bold" required>
+            <input type="text" name="reason" placeholder="Reason (e.g. Birthday)" class="w-full bg-white/60 dark:bg-slate-800/50 backdrop-blur-sm border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500 rounded-lg p-3 font-bold" required>
+            <div class="pt-4 flex justify-end gap-4">
+                <button type="button" onclick="closeRestDayModal()" class="px-6 py-3 rounded-xl font-bold text-blue-900/80 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition">Cancel</button>
                 <button class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md hover:shadow-lg hover:shadow-cyan-200/50 transition-all rounded-xl px-8 py-3 font-bold">Save</button>
             </div>
         </form>
